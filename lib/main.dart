@@ -14,8 +14,9 @@ class MyApp extends StatelessWidget {
 		return MaterialApp(
 
 			title: 'Flutter Demo',
+			debugShowCheckedModeBanner: false,
 			theme: ThemeData.light(),
-			home: const MyHomePage(title: 'puc mobile'),
+			home: const MyHomePage(title: 'Flutter Demo Home Page'),
 		);
 	}
 }
