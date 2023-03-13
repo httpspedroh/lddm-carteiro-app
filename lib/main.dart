@@ -58,19 +58,12 @@ class _MyHomePageState extends State<MyHomePage> {
 				title: Text(widget.title),
 			),
 
-			body: Center(
-
-				child: Column(
-				mainAxisAlignment: MainAxisAlignment.center,
-				children: <Widget>[
-
-					const Text('Você apertou o botão esse número de vezes:'),
-				
-					Text('$_counter',
-						
-						style: Theme.of(context).textTheme.headline4,
+			body: Container(
+				child: SizedBox.expand(
+					child: Image.asset("assets/images/gato.jpg",
+						fit: BoxFit.cover
 					),
-				]),
+				),
 			),
 
 			floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
