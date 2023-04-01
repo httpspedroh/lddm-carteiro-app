@@ -126,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 						child: ListView.builder(
 
-							itemCount: 5,
+							itemCount: 10,
 							itemBuilder: (context, index) {
 
 								return Container(
@@ -143,8 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
 												padding: const EdgeInsets.only(top: 17, bottom: 17),
 												child: const CircleAvatar(
 
-													backgroundColor: Colors.purple,
-													radius: 30,
+													backgroundColor: Color.fromARGB(255, 203, 100, 221),
 													child: Icon(Icons.delivery_dining_rounded,
 														color: Colors.black,
 														size: 30,
@@ -165,9 +164,9 @@ class _MyHomePageState extends State<MyHomePage> {
 															
 															Row(
 																
-																children: const [
+																children:  [
 
-																	Padding(padding: EdgeInsets.only(top: 15)),
+																	const Padding(padding: EdgeInsets.only(top: 15)),
 
 																	Text("Switch Game",
 
@@ -175,18 +174,18 @@ class _MyHomePageState extends State<MyHomePage> {
 																		style: TextStyle(
 
 																			fontSize: 18,
-																			fontWeight: FontWeight.bold,
+																			fontWeight: index > 0 ? FontWeight.normal : FontWeight.bold,
 																		),
 																	),
 
-																	Spacer(),
+																	const Spacer(),
 
 																	Text("13 min atrás",
 
 																		style: TextStyle(
 
 																			fontSize: 10,
-																			fontWeight: FontWeight.bold,
+																			fontWeight: index > 0 ? FontWeight.normal : FontWeight.bold,
 																		),
 																	),
 																],
