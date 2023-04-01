@@ -17,21 +17,42 @@ class MyApp extends StatelessWidget {
 	Widget build(BuildContext context) {
 
 		return MaterialApp(
-
+			
 			title: 'Postino',
 			debugShowCheckedModeBanner: false,
 			home: const MyHomePage(title: 'Postino'),
-			themeMode: ThemeMode.dark, 
 
 			theme: ThemeData(
 
-				brightness: Brightness.light,
+				colorScheme: const ColorScheme.light(
+					
+					primary: Colors.yellow,
+					secondary: Colors.yellow,
+					background: Colors.white,
+					error: Colors.red,
+					onPrimary: Colors.black,
+					onSecondary: Colors.black,
+					brightness: Brightness.light,
+				),
 			),
 
 			darkTheme: ThemeData(
 
-				brightness: Brightness.dark,
+				colorScheme: const ColorScheme.dark(
+					
+					primary: Colors.white,
+					secondary: Colors.yellow,
+					background: Colors.black,
+					surface: Color.fromARGB(255, 30, 30, 30),
+					onSurface: Colors.white,
+					error: Colors.red,
+					onPrimary: Colors.yellow,
+					onSecondary: Colors.black,
+					brightness: Brightness.dark,
+				),
 			),
+
+			themeMode: ThemeMode.dark, 
 
 		);
 	}
@@ -110,8 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 								return Container(
 									
-									color: index % 2 != 0 ? Colors.transparent : Colors.black26,
-									// padding: const EdgeInsets.only(bottom: 3),
+									color: index % 2 != 0 ? Colors.transparent : Colors.black12,
 									child: Row(
 						
 										children: [
@@ -227,31 +247,18 @@ class _MyHomePageState extends State<MyHomePage> {
 					// ---------------------------------- //
 				],
 			),
+			
 			// ---------------------------------- //
 
-			floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-			floatingActionButton: Row(
+			floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+			floatingActionButton: FloatingActionButton(
 
-				mainAxisAlignment: MainAxisAlignment.spaceAround,
-				children: [
-
-					FloatingActionButton(
-
-						onPressed: _incrementCounter,
-						tooltip: 'Increment',
-						backgroundColor: Colors.green,
-						child: const Icon(Icons.add),
-					),
-
-					FloatingActionButton(
-
-						onPressed: _decrementCounter,
-						tooltip: 'Decrement',
-						backgroundColor: Colors.red,
-						child: const Icon(Icons.remove),
-					),
-				],
+				onPressed: _incrementCounter,
+				tooltip: 'Increment',
+				// backgroundColor: 
+				child: const Icon(Icons.add),
 			),
+
 		);
   	}
 }
