@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 
 // ------------------------------------------------------------------------------------------------- //
 
-class Login extends StatefulWidget {
+class Register extends StatefulWidget {
 
-  	const Login({super.key});
+  	const Register({super.key});
 
   	@override
-  	State<Login> createState() => _LoginState();
+  	State<Register> createState() => _RegisterState();
 }
 
 // ------------------------------------------------------------------------------------------------- //
 
-class _LoginState extends State<Login> {
+class _RegisterState extends State<Register> {
 
-	bool _obscureText = true;
+	bool _obscureText = true, _obscureTextRepeat = true;
 
 	// ------------------------------------------------------------ //
 
@@ -29,7 +29,7 @@ class _LoginState extends State<Login> {
 
 				leading: const Icon(Icons.arrow_back_rounded),
 				centerTitle: true,
-				title: const Text('Login'),
+				title: const Text('Criar nova conta'),
 			),
 
 			// ---------------------------------- //
@@ -113,7 +113,46 @@ class _LoginState extends State<Login> {
 														});
 													},
 												),
+
+												border: const OutlineInputBorder(
+													
+													borderSide: BorderSide.none,
+													borderRadius: BorderRadius.all(Radius.circular(100)),
+												),
+											),
+										),
+
+										const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+
+										// ---------------------------------- //
+
+										// Repeat password field
+										TextFormField(
+									
+											keyboardType: TextInputType.text,
+											obscureText: _obscureTextRepeat,
+											enableSuggestions: false,
+											autocorrect: false,
+											maxLines: 1,
+											autofocus: true,
+											decoration: InputDecoration(
 												
+												contentPadding: const EdgeInsets.symmetric(vertical: 10),
+												isDense: true,
+												filled: true,
+												fillColor: Colors.black12,
+												hintText: 'repita a senha',
+												prefixIcon: const Icon(Icons.password_rounded),
+												suffixIcon: IconButton(
+
+													icon: Icon(_obscureTextRepeat ? Icons.visibility : Icons.visibility_off),
+													onPressed: () {
+														setState(() {
+															_obscureTextRepeat = !_obscureTextRepeat;
+														});
+													},
+												),
+
 												border: const OutlineInputBorder(
 													
 													borderSide: BorderSide.none,
@@ -123,50 +162,15 @@ class _LoginState extends State<Login> {
 										),
 
 										// ---------------------------------- //
-										
-										// Forgot password and create account buttons
-										Row(children: [
-
-											TextButton(
-										
-												onPressed: () {},
-												child: Text('criar nova conta',
-												
-													style: TextStyle(
-														
-														decoration: TextDecoration.underline,
-														color: Theme.of(context).colorScheme.onSurface,
-														fontSize: 12,
-													),
-												),
-											),
-
-											const Spacer(),
-
-											TextButton(
-											
-												onPressed: () {},
-												child: Text('esqueci minha senha',
-												
-													style: TextStyle(
-														
-														color: Theme.of(context).colorScheme.onSurface,
-														fontSize: 12,
-													),
-												),
-											),
-										]),
-
-										// ---------------------------------- //
 
 										// Login button
-										const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+										const Padding(padding: EdgeInsets.symmetric(vertical: 15)),
 
 										ElevatedButton.icon(
 
 											onPressed: (){},
 
-											icon: const Icon(Icons.local_shipping_rounded, 
+											icon: const Icon(Icons.person_add_rounded, 
 												color: Colors.black,
 												size: 23,
 											),
@@ -176,7 +180,7 @@ class _LoginState extends State<Login> {
 												foregroundColor: Colors.black,
 											),
 
-											label: const Text("Fazer login",
+											label: const Text("Criar nova conta",
 												
 												style: TextStyle(
 													color: Colors.black,
@@ -201,6 +205,7 @@ class _LoginState extends State<Login> {
 
 														onPressed: () {},
 														style: ElevatedButton.styleFrom(
+
 															shape: const CircleBorder(),
 															padding: const EdgeInsets.all(15),
 															backgroundColor: const Color.fromARGB(255, 0, 95, 172),
@@ -221,6 +226,7 @@ class _LoginState extends State<Login> {
 
 														onPressed: () {},
 														style: ElevatedButton.styleFrom(
+
 															shape: const CircleBorder(),
 															padding: const EdgeInsets.all(15),
 															backgroundColor: Colors.white,
@@ -240,6 +246,7 @@ class _LoginState extends State<Login> {
 
 														onPressed: () {},
 														style: ElevatedButton.styleFrom(
+
 															shape: const CircleBorder(),
 															padding: const EdgeInsets.all(15),
 															backgroundColor: const Color.fromARGB(255, 77, 170, 247),

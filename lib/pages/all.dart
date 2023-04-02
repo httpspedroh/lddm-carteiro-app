@@ -26,8 +26,8 @@ class _AllObjectsState extends State<AllObjects> {
 
 			appBar: AppBar(
 
-				// leading: const Icon(Icons.menu),
-				title: const Center(child: Text("Todos")),
+				centerTitle: true,
+				title: const Text("Todos"),
 				actions: const [
 
 					Padding(

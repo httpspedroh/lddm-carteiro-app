@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'pages/all.dart';
 import 'pages/details.dart';
 import 'pages/login.dart';
+import 'pages/register.dart';
 import 'pages/about.dart';
 
 // ------------------------------------------------------------------------------------------------- //
@@ -25,10 +26,11 @@ class MyApp extends StatelessWidget {
 			routes: {
 				"/details": (context) => const Details(),
 				"/login": (context) => const Login(),
+				"/register": (context) => const Register(),
 				"/about": (context) => const About(),
 			},
 
-			home: const AllObjects(),
+			home: const Login(),
 
 			theme: ThemeData(
 
@@ -38,6 +40,7 @@ class MyApp extends StatelessWidget {
 					secondary: Colors.yellow,
 					background: Colors.white,
 					error: Colors.red,
+					onSurface: Colors.black,
 					onPrimary: Colors.black,
 					onSecondary: Colors.black,
 					brightness: Brightness.light,
