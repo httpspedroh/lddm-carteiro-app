@@ -90,7 +90,6 @@ class NavDrawer extends StatelessWidget {
 
 									height: 20,
 									thickness: 1.5,
-									color: Colors.white12,
 								),
 
 								ListTile(

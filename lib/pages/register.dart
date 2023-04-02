@@ -205,7 +205,7 @@ class _RegisterState extends State<Register> {
 
 															shape: const CircleBorder(),
 															padding: const EdgeInsets.all(15),
-															backgroundColor: const Color.fromARGB(255, 0, 95, 172),
+															backgroundColor: Colors.white,
 															foregroundColor: Colors.black,
 														),
 
@@ -213,7 +213,7 @@ class _RegisterState extends State<Register> {
 
 															height: 30, 
 															width: 30, 
-															color: Colors.white,
+															color: const Color.fromARGB(255, 0, 95, 172),
 														),
 													),
 
@@ -246,7 +246,7 @@ class _RegisterState extends State<Register> {
 
 															shape: const CircleBorder(),
 															padding: const EdgeInsets.all(15),
-															backgroundColor: const Color.fromARGB(255, 77, 170, 247),
+															backgroundColor: Colors.white,
 															foregroundColor: Colors.black,
 														),
 
@@ -254,7 +254,7 @@ class _RegisterState extends State<Register> {
 
 															height: 30, 
 															width: 30, 
-															color: Colors.white,
+															color: const Color.fromARGB(255, 77, 170, 247),
 														),
 													),
 												],
