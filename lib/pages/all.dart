@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../components/drawer.dart';
 
 // ------------------------------------------------------------------------------------------------- //
 
@@ -25,7 +26,7 @@ class _AllObjectsState extends State<AllObjects> {
 
 			appBar: AppBar(
 
-				leading: const Icon(Icons.menu),
+				// leading: const Icon(Icons.menu),
 				title: const Center(child: Text("Todos")),
 				actions: const [
 
@@ -36,6 +37,10 @@ class _AllObjectsState extends State<AllObjects> {
 					),
 				],
 			),
+
+			// ---------------------------------- //
+
+			drawer: const NavDrawer(),
 
 			// ---------------------------------- //
 
