@@ -27,7 +27,7 @@ class _RegisterState extends State<Register> {
 
 			appBar: AppBar(
 
-				leading: const Icon(Icons.arrow_back_rounded),
+				leading: IconButton(icon: const Icon(Icons.arrow_back_rounded), onPressed: () => Navigator.pop(context)),
 				centerTitle: true,
 				title: const Text('Criar nova conta'),
 			),
@@ -66,7 +66,6 @@ class _RegisterState extends State<Register> {
 									
 											keyboardType: TextInputType.emailAddress,
 											maxLines: 1,
-											autofocus: true,
 											decoration: const InputDecoration(
 												
 												contentPadding: EdgeInsets.symmetric(vertical: 10),
@@ -95,7 +94,6 @@ class _RegisterState extends State<Register> {
 											enableSuggestions: false,
 											autocorrect: false,
 											maxLines: 1,
-											autofocus: true,
 											decoration: InputDecoration(
 												
 												contentPadding: const EdgeInsets.symmetric(vertical: 10),
@@ -134,7 +132,6 @@ class _RegisterState extends State<Register> {
 											enableSuggestions: false,
 											autocorrect: false,
 											maxLines: 1,
-											autofocus: true,
 											decoration: InputDecoration(
 												
 												contentPadding: const EdgeInsets.symmetric(vertical: 10),

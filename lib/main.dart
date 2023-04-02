@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
 				"/about": (context) => const About(),
 			},
 
-			home: const Login(),
+			home: const AllObjects(),
 
 			theme: ThemeData(
 

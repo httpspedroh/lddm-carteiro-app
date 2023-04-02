@@ -66,7 +66,6 @@ class _LoginState extends State<Login> {
 									
 											keyboardType: TextInputType.emailAddress,
 											maxLines: 1,
-											autofocus: true,
 											decoration: const InputDecoration(
 												
 												contentPadding: EdgeInsets.symmetric(vertical: 10),
@@ -95,7 +94,6 @@ class _LoginState extends State<Login> {
 											enableSuggestions: false,
 											autocorrect: false,
 											maxLines: 1,
-											autofocus: true,
 											decoration: InputDecoration(
 												
 												contentPadding: const EdgeInsets.symmetric(vertical: 10),

@@ -10,58 +10,115 @@ class NavDrawer extends StatelessWidget {
 	Widget build(BuildContext context) {
 
 		return Drawer(
-
-			child: ListView(
-
-				padding: EdgeInsets.zero,
-				children: [
+			
+			child: Column(
 					
-					const DrawerHeader(
+				children: [
 
-						decoration: BoxDecoration(
-							color: Colors.green,
-							image: DecorationImage(
-								fit: BoxFit.fill,
-								image: AssetImage('assets/images/logo_new.png'),
-							)
+					const Padding(padding: EdgeInsets.only(top: 30)),
+
+					const Image(image: AssetImage("assets/images/logo_new.png"), height: 100),
+				
+					const Text("Postino",
+						style: TextStyle(
+							fontWeight: FontWeight.bold, 
+							fontSize: 15,
 						),
-						
-						child: Text('Side menu',
-							style: TextStyle(color: Colors.white, fontSize: 25),
+					), 
+
+					const Padding(padding: EdgeInsets.only(top: 5)),
+
+					const Text("v1.0.0",
+						style: TextStyle(
+	
+							fontSize: 10,
 						),
 					),
 
-					const ListTile(
+					const Padding(padding: EdgeInsets.only(top: 30)),
 
-						leading: Icon(Icons.input),
-						title: Text('Welcome'),
-						// onTap: () => {},
+					// ------------------------------------------------ //
+
+					Expanded(child: 
+							
+						Column(
+							
+							children: [
+
+								ListTile(
+
+									leading: const Icon(Icons.inventory_2),
+									title: const Text("Todos"),
+									onTap: () => {
+										Navigator.pushNamed(context, '/'),
+									},
+								),
+
+								ListTile(
+
+									leading: const Icon(Icons.favorite_border),
+									title: const Text("Favoritos"),
+									onTap: () => {},
+								),
+
+								ListTile(
+
+									leading: const Icon(Icons.check),
+									title: const Text("Entregues"),
+									onTap: () => {},
+								),
+
+								ListTile(
+
+									leading: const Icon(Icons.archive),
+									title: const Text("Arquivados"),
+									onTap: () => {},
+								),
+							],
+						),
 					),
 
-					ListTile(
+					// ------------------------------------------------ //
 
-						leading: const Icon(Icons.verified_user),
-						title: const Text('Profile'),
-						onTap: () => {Navigator.of(context).pop()},
-					),
+					Align(
 
-					ListTile(
+						alignment: FractionalOffset.bottomCenter,
+						child: Column(
+							children: [
 
-						leading: const Icon(Icons.settings),
-						title: const Text('Settings'),
-						onTap: () => {Navigator.of(context).pop()},
-					),
+								const Divider(
 
-					ListTile(
-						leading: const Icon(Icons.border_color),
-						title: const Text('Feedback'),
-						onTap: () => {Navigator.of(context).pop()},
-					),
+									height: 20,
+									thickness: 1.5,
+									color: Colors.white12,
+								),
 
-					ListTile(
-						leading: const Icon(Icons.exit_to_app),
-						title: const Text('Logout'),
-						onTap: () => {Navigator.of(context).pop()},
+								ListTile(
+
+									leading: const Icon(Icons.settings),
+									title: const Text("Configurações"),
+									onTap: () => {},
+								),
+
+								ListTile(
+
+									leading: const Icon(Icons.info),
+									title: const Text("Sobre nós"),
+									onTap: () => {
+										Navigator.pushNamed(context, '/about'),
+									},
+								),
+
+								ListTile(
+
+									leading: const Icon(Icons.person_add),
+									title: const Text("Criar nova conta"),
+									onTap: () => {
+										Navigator.pushNamed(context, '/register'),
+									},
+								),
+							],
+						)
 					),
 				],
 			),
