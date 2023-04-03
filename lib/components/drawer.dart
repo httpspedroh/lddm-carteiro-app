@@ -50,7 +50,7 @@ class NavDrawer extends StatelessWidget {
 									leading: const Icon(Icons.inventory_2),
 									title: const Text("Todos"),
 									onTap: () => {
-										Navigator.pushNamed(context, '/'),
+										Navigator.pushNamed(context, '/all'),
 									},
 								),
 

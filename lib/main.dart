@@ -24,13 +24,15 @@ class MyApp extends StatelessWidget {
 			debugShowCheckedModeBanner: false,
 			initialRoute: "/",
 			routes: {
+
+				"/all":  (context) => const AllObjects(),
 				"/details": (context) => const Details(),
 				"/login": (context) => const Login(),
 				"/register": (context) => const Register(),
 				"/about": (context) => const About(),
 			},
 
-			home: const AllObjects(),
+			home: const Details(),
 
 			theme: ThemeData(
 
