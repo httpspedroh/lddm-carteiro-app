@@ -29,7 +29,7 @@ class _LoginState extends State<Login> {
 
 				leading: const Icon(Icons.arrow_back_rounded),
 				centerTitle: true,
-				title: const Text('Login'),
+				title: const Text("Login", style: TextStyle(fontWeight: FontWeight.bold)),
 			),
 
 			// ---------------------------------- //

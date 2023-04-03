@@ -27,7 +27,7 @@ class _AboutState extends State<About> {
 			appBar: AppBar(
 
 				centerTitle: true,
-				title: const Text("Sobre nós"),
+				title: const Text("Sobre nós", style: TextStyle(fontWeight: FontWeight.bold)),
 			),
 
 			// ---------------------------------- //

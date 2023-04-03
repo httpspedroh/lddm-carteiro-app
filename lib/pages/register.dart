@@ -29,7 +29,7 @@ class _RegisterState extends State<Register> {
 
 				leading: IconButton(icon: const Icon(Icons.arrow_back_rounded), onPressed: () => Navigator.pop(context)),
 				centerTitle: true,
-				title: const Text('Criar nova conta'),
+				title: const Text("Criar nova conta", style: TextStyle(fontWeight: FontWeight.bold)),
 			),
 
 			// ---------------------------------- //

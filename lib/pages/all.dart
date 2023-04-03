@@ -27,7 +27,7 @@ class _AllObjectsState extends State<AllObjects> {
 			appBar: AppBar(
 
 				centerTitle: true,
-				title: const Text("Todos"),
+				title: const Text("Todos", style: TextStyle(fontWeight: FontWeight.bold)),
 				actions: const [
 
 					Padding(
@@ -101,7 +101,7 @@ class _AllObjectsState extends State<AllObjects> {
 																		textAlign: TextAlign.center,
 																		style: TextStyle(
 
-																			fontSize: 18,
+																			fontSize: 15,
 																			fontWeight: index > 0 ? FontWeight.normal : FontWeight.bold,
 																		),
 																	),
@@ -134,6 +134,7 @@ class _AllObjectsState extends State<AllObjects> {
 
 																	Text("Saiu para entrega ao destinatário",
 																		
+																		overflow: TextOverflow.fade,
 																		style: TextStyle(fontSize: 13),
 																	),
 
@@ -146,7 +147,6 @@ class _AllObjectsState extends State<AllObjects> {
 																
 																children: const [
 
-
 																	Icon(Icons.location_on_rounded,
 																		size: 15,
 																	),
@@ -155,6 +155,7 @@ class _AllObjectsState extends State<AllObjects> {
 
 																	Text("CDD PAMPULHA - BELO HORIZONTE/MG",
 																		
+																		overflow: TextOverflow.fade,
 																		style: TextStyle(fontSize: 13),
 																	),
 
