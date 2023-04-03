@@ -25,11 +25,11 @@ class MyApp extends StatelessWidget {
 			initialRoute: "/",
 			routes: {
 
-				"/all":  (context) => const AllObjects(),
-				"/details": (context) => const Details(),
-				"/login": (context) => const Login(),
-				"/register": (context) => const Register(),
-				"/about": (context) => const About(),
+				"/all":  (context) => const AllObjects(), // Tela principal
+				"/details": (context) => const Details(), // Principal funcionalidade
+				"/login": (context) => const Login(), // Login
+				"/register": (context) => const Register(), // Registro
+				"/about": (context) => const About(), // Sobre nós
 			},
 
 			home: const AllObjects(),
