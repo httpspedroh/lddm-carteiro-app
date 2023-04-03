@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:lddm_carteiro_app/components/drawer.dart';
 
 // ------------------------------------------------------------------------------------------------- //
@@ -57,7 +58,7 @@ class _DetailsState extends State<Details> {
 								),
 							],
 
-							expandedHeight: 200.0,
+							expandedHeight: 170.0,
 							floating: false,
 							pinned: true,
 							
@@ -72,8 +73,7 @@ class _DetailsState extends State<Details> {
 										
 											Container(
 												
-												// color: Colors.red,
-												padding: EdgeInsets.only(left: 70, right: 70, top: AppBar().preferredSize.height)
+												padding: EdgeInsets.only(left: 70, right: 70, top: AppBar().preferredSize.height + 30)
 												,
 												child: Column(
 														
@@ -88,11 +88,24 @@ class _DetailsState extends State<Details> {
 																),
 
 																Padding(padding: EdgeInsets.only(right: 5)),
-												
 
 																Icon(Icons.flag),
 															],
 														),
+
+														Row(children: const [
+
+															Text('2 DIAS ATRÁS VIA OBJETO POSTAL'),
+														]),
+
+														const Padding(padding: EdgeInsets.only(top: 10)),
+
+														Row(children: const [
+
+															Text('Switch Game',
+																style: TextStyle(fontSize: 30)
+															),
+														]),
 													],
 												)
 											),
@@ -105,11 +118,29 @@ class _DetailsState extends State<Details> {
         		},
 				
 				// ---------------------------------- //
-				
-				body: const Center(
+					
+				body: Column(
+					children: [
+					Container(
+						
+						color: Colors.red,
+						height: 70,
+					),
 
-					child: Text("Hello world!"),
+					Container(
+						
+						color: Colors.blue,
+						height: 70,
+					),
+
+					Container(
+						
+						color: Colors.red,
+						height: 70,
+					),
+					],
 				),
+			
 
 				// ---------------------------------- //
 

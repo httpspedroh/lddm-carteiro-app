@@ -67,7 +67,7 @@ class _AllObjectsState extends State<AllObjects> {
 											Container(
 
 												height: 90,
-												width: 100,
+												width: 90,
 												padding: const EdgeInsets.only(top: 17, bottom: 17),
 												child: const CircleAvatar(
 

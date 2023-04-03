@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
 				"/about": (context) => const About(),
 			},
 
-			home: const Details(),
+			home: const AllObjects(),
 
 			theme: ThemeData(
 
@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
 				),
 			),
 
-			themeMode: ThemeMode.light, 
+			themeMode: ThemeMode.dark,
 		);
 	}
 }
