@@ -31,6 +31,7 @@ class _DetailsState extends State<Details> {
 
 						SliverAppBar(
 
+							backgroundColor: Theme.of(context).brightness == Brightness.light ? Theme.of(context).colorScheme.secondary : null,
 							actions: [
 
 								IconButton(
