@@ -46,11 +46,10 @@ class MyApp extends StatelessWidget {
 
 				colorScheme: const ColorScheme.light(
 					
-					primary: Colors.yellow,
+					primary: Colors.black,
 					secondary: Colors.yellow,
 					background: Colors.white,
 					error: Colors.red,
-					onSurface: Colors.black,
 					onPrimary: Colors.black,
 					onSecondary: Colors.black,
 					brightness: Brightness.light,
@@ -67,13 +66,13 @@ class MyApp extends StatelessWidget {
 					surface: Color.fromARGB(255, 30, 30, 30),
 					onSurface: Colors.white,
 					error: Colors.red,
-					onPrimary: Colors.yellow,
+					onPrimary: Colors.black,
 					onSecondary: Colors.black,
 					brightness: Brightness.dark,
 				),
 			),
 
-			themeMode: ThemeMode.dark,
+			themeMode: ThemeMode.light,
 		);
 	}
 }

@@ -26,6 +26,7 @@ class _AboutState extends State<About> {
 
 			appBar: AppBar(
 
+				backgroundColor: Theme.of(context).brightness == Brightness.light ? Theme.of(context).colorScheme.secondary : null,
 				centerTitle: true,
 				title: const Text("Sobre nós", style: TextStyle(fontWeight: FontWeight.bold)),
 			),

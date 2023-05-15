@@ -70,10 +70,11 @@ class _AllObjectsState extends State<AllObjects> {
 		return objects;
 	}
 
-	_deleteObject(int id) async {
+	_deleteObject(String name) async {
 
 		Database db = await _getDatabase();
-		int deleted = await db.delete("objects", where: "id = ?", whereArgs: [id]);
+		int deleted = await db.delete("objects", where: "name = ?", whereArgs: [name]);
+
 		print("Deleted: $deleted");
 	}
 
@@ -92,13 +93,142 @@ class _AllObjectsState extends State<AllObjects> {
 		print("Updated: $updated");
 	}
 
+	_deleteAllObjects() async {
+
+		Database db = await _getDatabase();
+		int deleted = await db.delete("objects");
+		print("Deleted: $deleted");
+	}
+
+	Future _showAlertDialog(BuildContext context) async {
+
+		TextEditingController _controllerTrackingCode = TextEditingController();
+		TextEditingController _controllerName = TextEditingController();
+
+		return showDialog(
+
+			barrierDismissible: false,
+			context: context,
+			builder: (BuildContext context) {
+
+				return AlertDialog(
+
+					contentPadding: EdgeInsets.zero,
+					title: const Text("Adicionar objeto",
+						style: TextStyle(fontSize: 15)
+					),
+
+					content: Container(
+						
+						padding: const EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 5),
+						width: MediaQuery.of(context).size.width * 0.8,
+						child: Column(
+						
+							mainAxisSize: MainAxisSize.min,
+							children: [
+
+								TextField(
+
+									decoration: const InputDecoration(
+
+										labelText: "Código de rastreio",
+										helperText: "Ex: AB123456789BR",
+										border: OutlineInputBorder(
+											borderSide: BorderSide(
+												color: Colors.white24,
+												width: 1.0,
+											),
+										),
+									),
+
+									cursorColor: Colors.white24,
+									controller: _controllerTrackingCode,
+									maxLength: 13,
+								),
+
+								const SizedBox(height: 15),
+
+								TextField(
+
+									decoration: const InputDecoration(
+
+										labelText: "Nome do objeto",
+										border: OutlineInputBorder(
+											borderSide: BorderSide(
+												color: Colors.white24,
+												width: 1.0,
+											),
+										),
+									),
+
+									cursorColor: Colors.white24,
+									controller: _controllerName,
+									maxLength: 30,
+								),
+							],
+							
+						),
+					),
+
+					actions: [
+
+						// Make 2 buttons white space between them
+						Padding(
+							
+							padding: const EdgeInsets.only(left: 10, right: 10),
+							child: Row(
+
+								mainAxisAlignment: MainAxisAlignment.spaceBetween,
+								children: [
+
+									// Button without background
+									TextButton(
+
+										child: const Padding(
+
+											padding: EdgeInsets.only(top: 10, bottom: 10),
+											child: Text("CANCELAR",
+												style: TextStyle(
+													color: Colors.red,
+													fontSize: 13,
+												),
+											),
+										),
+
+										onPressed: () {
+											Navigator.of(context).pop();
+										}
+									),
+
+									// Make non-clickable button when text controllers are empty
+									TextButton(
+
+										child: const Padding(
+
+											padding: EdgeInsets.only(top: 10, bottom: 10),
+											child: Text("ADICIONAR",
+												style: TextStyle(fontSize: 13),
+											),
+										),
+
+										onPressed: () {
+											Navigator.of(context).pop();
+										}
+									),
+								],
+							),
+	
+						)
+					],
+				);
+			}
+		);
+	}
+
 	// ------------------------------------------------------------------------------------------------- //
 
   	@override
   	Widget build(BuildContext context) {
-
-		TextEditingController _controllerName = TextEditingController();
-    	TextEditingController _controllerTrackingCode = TextEditingController();
 
 		return Scaffold(
 
@@ -106,6 +236,7 @@ class _AllObjectsState extends State<AllObjects> {
 
 			appBar: AppBar(
 
+				backgroundColor: Theme.of(context).brightness == Brightness.light ? Theme.of(context).colorScheme.secondary : null,
 				centerTitle: true,
 				title: const Text("Todos", style: TextStyle(fontWeight: FontWeight.bold)),
 				actions: const [
@@ -123,79 +254,6 @@ class _AllObjectsState extends State<AllObjects> {
 			drawer: const NavDrawer(),
 
 			// ---------------------------------- //
-
-			body: Container(
-
-				padding: const EdgeInsets.all(16),
-				width: double.infinity,
-				child: Column(
-
-					children: [
-
-						TextField(
-
-							decoration: InputDecoration(labelText: "Digite o nome: "),
-							controller: _controllerName,
-						),
-
-						TextField(
-							decoration: InputDecoration(labelText: "Digite o código: "),
-							controller: _controllerTrackingCode,
-						),
-
-						SizedBox(height: 20),
-
-						Column(
-
-							mainAxisAlignment: MainAxisAlignment.center,
-							crossAxisAlignment: CrossAxisAlignment.center,
-
-							children: [
-
-								ElevatedButton(
-
-									child: Text("Criar objeto"),
-									onPressed: () {
-										_createObject(_controllerName.text, _controllerTrackingCode.text);
-									}
-								),
-								
-								ElevatedButton(
-
-									child: Text("Listar objetos"),
-									onPressed: () {
-										_listObjects();
-									}
-								),
-
-								ElevatedButton(
-
-									child: Text("Deletar objeto"),
-									onPressed: () {
-										_deleteObject(1);
-									}
-								),
-
-								ElevatedButton(
-
-									child: Text("Atualizar objeto"),
-									onPressed: () {
-										_updateObject(1, "Teste", "123456789");
-									}
-								),
-
-								ElevatedButton(
-
-									child: Text("Deletar tudo"),
-									onPressed: () {
-										_deleteObject(1);
-									}
-								),
-							],
-						),
-					],
-				),
-			),
 
 			// body: Column(
 
@@ -338,7 +396,7 @@ class _AllObjectsState extends State<AllObjects> {
 			floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
 			floatingActionButton: FloatingActionButton(
 
-				onPressed: () {},
+				onPressed: () => _showAlertDialog(context),
 				child: const Icon(Icons.add),
 			),
 

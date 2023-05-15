@@ -27,6 +27,7 @@ class _RegisterState extends State<Register> {
 
 			appBar: AppBar(
 
+				backgroundColor: Theme.of(context).brightness == Brightness.light ? Theme.of(context).colorScheme.secondary : null,
 				leading: IconButton(icon: const Icon(Icons.arrow_back_rounded), onPressed: () => Navigator.pop(context)),
 				centerTitle: true,
 				title: const Text("Criar nova conta", style: TextStyle(fontWeight: FontWeight.bold)),

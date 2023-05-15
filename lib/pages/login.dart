@@ -27,6 +27,7 @@ class _LoginState extends State<Login> {
 
 			appBar: AppBar(
 
+				backgroundColor: Theme.of(context).brightness == Brightness.light ? Theme.of(context).colorScheme.secondary : null,
 				leading: const Icon(Icons.arrow_back_rounded),
 				centerTitle: true,
 				title: const Text("Login", style: TextStyle(fontWeight: FontWeight.bold)),
