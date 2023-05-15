@@ -94,6 +94,15 @@ class NavDrawer extends StatelessWidget {
 
 								ListTile(
 
+									leading: const Icon(Icons.data_array_rounded),
+									title: const Text("Database"),
+									onTap: () => {
+										Navigator.pushNamed(context, '/db_debug'),
+									},
+								),
+
+								ListTile(
+
 									leading: const Icon(Icons.settings),
 									title: const Text("Configurações"),
 									onTap: () => {},

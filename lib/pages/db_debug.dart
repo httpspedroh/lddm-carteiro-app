@@ -5,19 +5,17 @@ import 'package:path/path.dart';
 
 // ------------------------------------------------------------------------------------------------- //
 
-class AllObjects extends StatefulWidget {
+class DbDebug extends StatefulWidget {
 
-  	const AllObjects({super.key});
+  	const DbDebug({super.key});
 
   	@override
-  	State<AllObjects> createState() => _AllObjectsState();
+  	State<DbDebug> createState() => _DbDebugState();
 }
 
 // ------------------------------------------------------------------------------------------------- //
 
-class _AllObjectsState extends State<AllObjects> {
-
-	// ----------------------------------------------------------------- //
+class _DbDebugState extends State<DbDebug> {
 
 	_getDatabase() async {
 		
@@ -38,7 +36,7 @@ class _AllObjectsState extends State<AllObjects> {
 		return db;
 	}
 
-	// ----------------------------------------------------------------- //
+	// ------------------------------------------------------------ //
 
 	_createObject(String name, String trackingCode) async {
 
@@ -51,11 +49,46 @@ class _AllObjectsState extends State<AllObjects> {
 			"last_update": DateTime.now().toString()
 		};
 
-		int id = await db.insert("objects", object);
-		print("Saved: $id");
+		db.insert("objects", object);
 	}
 
-	// ----------------------------------------------------------------- //
+	// ------------------------------------------------------------ //
+
+	_deleteObject(int id) async {
+
+		Database db = await _getDatabase();
+		
+		db.delete(
+
+			"objects",
+			where: "id = ?",
+			whereArgs: [id]
+		);
+	}
+
+	// ------------------------------------------------------------ //
+
+	_updateObject(int id, String trackingCode,  String name) async {
+
+		Database db = await _getDatabase();
+		Map<String, dynamic> object = {
+
+			"name": name,
+			"tracking_code": trackingCode,
+			"last_info": "{}",
+			"last_update": DateTime.now().toString()
+		};
+
+		db.update(
+
+			"objects",
+			object,
+			where: "id = ?",
+			whereArgs: [id]
+		);
+	}
+
+	// ------------------------------------------------------------ //
 
 	Future<List<Map<String, dynamic>>> _getAllObjects() async {
 
@@ -63,12 +96,10 @@ class _AllObjectsState extends State<AllObjects> {
 		String sql = "SELECT * FROM objects";
 		List<Map<String, dynamic>> objects = await db.rawQuery(sql);
 
-		// if objects is empty, return an empty list
-		if(objects.isEmpty) { return []; }
-		else { return objects; }
+		return objects;
 	}
 
-	// ----------------------------------------------------------------- //
+	// ------------------------------------------------------------ //
 
 	String _formatDate(String date) {
 
@@ -107,29 +138,19 @@ class _AllObjectsState extends State<AllObjects> {
 		return "1 seg atrás";
 	}
 
-	// ----------------------------------------------------------------- //
+	// ------------------------------------------------------------ //
 
-	_deleteObject(String name) async {
-
-		Database db = await _getDatabase();
-		int deleted = await db.delete("objects", where: "name = ?", whereArgs: [name]);
-
-		print("Deleted: $deleted");
-	}
-
-	_deleteAllObjects() async {
-
-		Database db = await _getDatabase();
-		int deleted = await db.delete("objects");
-		print("Deleted: $deleted");
-	}
-
-	// ----------------------------------------------------------------- //
-
-	Future _showAlertDialog(BuildContext context) async {
+	Future _showAlertDialog(BuildContext context, int id, String name, String trackingCode) async {
 
 		TextEditingController controllerTrackingCode = TextEditingController();
 		TextEditingController controllerName = TextEditingController();
+
+		// if id != 0, it means that the user wants to edit an object, than fill the text fields with the object's data
+		if(id != 0) {
+
+			controllerTrackingCode.text = trackingCode;
+			controllerName.text = name;
+		}
 
 		return showDialog(
 
@@ -140,8 +161,8 @@ class _AllObjectsState extends State<AllObjects> {
 				return AlertDialog(
 
 					contentPadding: EdgeInsets.zero,
-					title: const Text("Adicionar objeto",
-						style: TextStyle(fontSize: 15)
+					title: Text((id == 0 ? "Adicionar objeto" : "Editar objeto"),
+						style: const TextStyle(fontSize: 15)
 					),
 
 					content: Container(
@@ -229,11 +250,11 @@ class _AllObjectsState extends State<AllObjects> {
 									// Make non-clickable button when text controllers are empty
 									TextButton(
 
-										child: const Padding(
+										child: Padding(
 
-											padding: EdgeInsets.only(top: 10, bottom: 10),
-											child: Text("ADICIONAR",
-												style: TextStyle(fontSize: 13),
+											padding: const EdgeInsets.only(top: 10, bottom: 10),
+											child: Text((id == 0 ? "ADICIONAR" : "EDITAR"),
+												style: const TextStyle(fontSize: 13),
 											),
 										),
 
@@ -241,7 +262,8 @@ class _AllObjectsState extends State<AllObjects> {
 											
 											if(controllerTrackingCode.text.isNotEmpty && controllerName.text.isNotEmpty) {
 
-												_createObject(controllerName.text, controllerTrackingCode.text);
+												if(id == 0) { _createObject(controllerTrackingCode.text, controllerName.text); }
+												else { _updateObject(id, controllerTrackingCode.text, controllerName.text); }
 												
 												Navigator.of(context).pop();
 
@@ -252,7 +274,6 @@ class _AllObjectsState extends State<AllObjects> {
 									),
 								],
 							),
-	
 						)
 					],
 				);
@@ -260,7 +281,7 @@ class _AllObjectsState extends State<AllObjects> {
 		);
 	}
 
-	// ----------------------------------------------------------------- //
+	// ------------------------------------------------------------------------------------------------------------------------ //
 
   	@override
   	Widget build(BuildContext context) {
@@ -273,15 +294,7 @@ class _AllObjectsState extends State<AllObjects> {
 
 				backgroundColor: Theme.of(context).brightness == Brightness.light ? Theme.of(context).colorScheme.secondary : null,
 				centerTitle: true,
-				title: const Text("Todos", style: TextStyle(fontWeight: FontWeight.bold)),
-				actions: const [
-
-					Padding(
-
-						padding: EdgeInsets.symmetric(horizontal: 16),
-						child: Icon(Icons.search),
-					),
-				],
+				title: const Text("Database Debug", style: TextStyle(fontWeight: FontWeight.bold)),
 			),
 
 			// ---------------------------------- //
@@ -290,7 +303,6 @@ class _AllObjectsState extends State<AllObjects> {
 
 			// ---------------------------------- //
 
-			// Create body with ListView.builder using data from database
 			body: FutureBuilder<List<Map<String, dynamic>>>(
 				
 				future: _getAllObjects(),
@@ -306,153 +318,14 @@ class _AllObjectsState extends State<AllObjects> {
 
 			// ---------------------------------- //
 
-			// body: Column(
-
-			// 	children: [
-
-			// 		// ---------------------------------- //
-					
-			// 		Expanded(
-
-			// 			child: ListView.builder(
-
-			// 				itemCount: 3,
-			// 				itemBuilder: (context, index) {
-
-			// 					return InkWell(
-
-			// 						onTap: () => Navigator.pushNamed(context, "/details"),
-    		// 						child: Container(
-									
-			// 							color: index % 2 != 0 ? Colors.transparent : Colors.black12,
-			// 							child: Row(
-							
-			// 								children: [
-												
-			// 									Container(
-
-			// 										height: 90,
-			// 										width: 90,
-			// 										padding: const EdgeInsets.only(top: 17, bottom: 17),
-			// 										child: const CircleAvatar(
-
-			// 											backgroundColor: Color.fromARGB(255, 203, 100, 221),
-			// 											child: Icon(Icons.delivery_dining_rounded,
-			// 												color: Colors.black,
-			// 												size: 30,
-			// 											),
-			// 										),
-			// 									),
-												
-
-			// 									Expanded(
-													
-			// 										child: Container(
-														
-			// 											padding: const EdgeInsets.only(top: 15, bottom: 20, right: 15),
-			// 											child: Column(
-
-			// 												crossAxisAlignment: CrossAxisAlignment.stretch,
-			// 												children: [
-																
-			// 													Row(
-																	
-			// 														children:  [
-
-			// 															const Padding(padding: EdgeInsets.only(top: 15)),
-
-			// 															Text("Switch Game",
-
-			// 																textAlign: TextAlign.center,
-			// 																style: TextStyle(
-
-			// 																	fontSize: 15,
-			// 																	fontWeight: index > 0 ? FontWeight.normal : FontWeight.bold,
-			// 																),
-			// 															),
-
-			// 															const Spacer(),
-
-			// 															Text("13 min atrás",
-
-			// 																style: TextStyle(
-
-			// 																	fontSize: 10,
-			// 																	fontWeight: index > 0 ? FontWeight.normal : FontWeight.bold,
-			// 																),
-			// 															),
-			// 														],
-			// 													),
-																
-			// 													const Padding(padding: EdgeInsets.only(top: 12)),
-
-			// 													Row(
-																	
-			// 														children: const [
-
-
-			// 															Icon(Icons.arrow_right_alt_rounded,
-			// 																size: 15,
-			// 															),
-
-			// 															Padding(padding: EdgeInsets.only(left: 5)),
-
-			// 															Text("Saiu para entrega ao destinatário",
-																			
-			// 																overflow: TextOverflow.fade,
-			// 																style: TextStyle(fontSize: 13),
-			// 															),
-
-			// 														],
-			// 													),
-
-			// 													const Padding(padding: EdgeInsets.only(top: 5)),
-
-			// 													Row(
-																	
-			// 														children: const [
-
-			// 															Icon(Icons.location_on_rounded,
-			// 																size: 15,
-			// 															),
-
-			// 															Padding(padding: EdgeInsets.only(left: 5)),
-
-			// 															Text("CDD PAMPULHA - BELO HORIZONTE/MG",
-																			
-			// 																overflow: TextOverflow.fade,
-			// 																style: TextStyle(fontSize: 13),
-			// 															),
-
-			// 														],
-			// 													),
-			// 												], 
-			// 											),
-			// 										),
-			// 									),
-			// 								],
-			// 							)
-			// 						),
-			// 					);
-			// 				},
-			// 			),
-			// 		),
-
-			// 		// ---------------------------------- //
-			// 	],
-			// ),
-			
-			// ---------------------------------- //
-
 			floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
 			floatingActionButton: FloatingActionButton(
 
-				onPressed: () => _showAlertDialog(context),
+				onPressed: () => _showAlertDialog(context, 0, "", ""),
 				child: const Icon(Icons.add),
 			),
-
-		);
-  	}
+    	);
+	}
 
 	// ------------------------------------------------------------ //
 
@@ -469,7 +342,6 @@ class _AllObjectsState extends State<AllObjects> {
 
 					return InkWell(
 
-						onTap: () => Navigator.pushNamed(context, "/details"),
 						child: Container(
 						
 							color: index % 2 != 0 ? Colors.transparent : Colors.black12,
@@ -517,7 +389,6 @@ class _AllObjectsState extends State<AllObjects> {
 																	
 																	fontSize: 15,
 																	fontWeight: FontWeight.normal,
-																	// fontWeight: index > 0 ? FontWeight.normal : FontWeight.bold,
 																),
 															),
 
@@ -532,7 +403,6 @@ class _AllObjectsState extends State<AllObjects> {
 																	
 																	fontSize: 10,
 																	fontWeight: FontWeight.normal,
-																	// fontWeight: index > 0 ? FontWeight.normal : FontWeight.bold,
 																),
 															),
 														],
@@ -541,45 +411,56 @@ class _AllObjectsState extends State<AllObjects> {
 													const Padding(padding: EdgeInsets.only(top: 12)),
 
 													Row(
-														
-														children: const [
 
+														children: [
 
-															Icon(Icons.arrow_right_alt_rounded,
-																size: 15,
+															Column(
+
+																crossAxisAlignment: CrossAxisAlignment.start,
+																children: [
+
+																	Text("Código: ${snapshot.data![index]["tracking_code"]}",
+																		
+																		overflow: TextOverflow.fade,
+																		style: const TextStyle(
+																			
+																			fontSize: 12,
+																			fontWeight: FontWeight.normal,
+																		),
+																	),
+
+																	Text("ID: ${snapshot.data![index]["id"]}",
+																		
+																		overflow: TextOverflow.fade,
+																		style: const TextStyle(
+																			
+																			fontSize: 12,
+																			fontWeight: FontWeight.normal,
+																		),
+																	),
+																],
 															),
 
-															Padding(padding: EdgeInsets.only(left: 5)),
+															const Spacer(),
 
-															Text("Saiu para entrega ao destinatário",
+															IconButton(
+
+																onPressed: () {
+
+																	_deleteObject(snapshot.data![index]["id"] as int);
+																	setState(() {});
+																},
 																
-																overflow: TextOverflow.fade,
-																style: TextStyle(fontSize: 13),
+																icon: const Icon(Icons.delete_forever_rounded),
 															),
 
+															IconButton(
+
+																onPressed: () => _showAlertDialog(context, snapshot.data![index]["id"] as int, snapshot.data![index]["name"] as String, snapshot.data![index]["tracking_code"] as String),
+																icon: const Icon(Icons.edit_rounded),
+															),
 														],
-													),
-
-													const Padding(padding: EdgeInsets.only(top: 5)),
-
-													Row(
-														
-														children: const [
-
-															Icon(Icons.location_on_rounded,
-																size: 15,
-															),
-
-															Padding(padding: EdgeInsets.only(left: 5)),
-
-															Text("CDD PAMPULHA - BELO HORIZONTE/MG",
-																
-																overflow: TextOverflow.fade,
-																style: TextStyle(fontSize: 13),
-															),
-
-														],
-													),
+													)
 												], 
 											),
 										),

@@ -7,7 +7,7 @@ import 'pages/details.dart';
 import 'pages/login.dart';
 import 'pages/register.dart';
 import 'pages/about.dart';
-
+import 'pages/db_debug.dart';
 
 // ------------------------------------------------------------------------------------------------- //
 
@@ -18,6 +18,7 @@ void main() {
 		sqfliteFfiInit();
 		databaseFactory = databaseFactoryFfi;
 	}
+
 	runApp(const MyApp());
 }
 
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
 				"/login": (context) => const Login(), // Login
 				"/register": (context) => const Register(), // Registro
 				"/about": (context) => const About(), // Sobre nós
+				"/db_debug": (context) => const DbDebug(), // Banco de dados
 			},
 
 			home: const AllObjects(),
@@ -78,7 +80,7 @@ class MyApp extends StatelessWidget {
 				),
 			),
 
-			themeMode: ThemeMode.light,
+			themeMode: ThemeMode.dark,
 		);
 	}
 }
