@@ -11,7 +11,7 @@ import 'pages/db_debug.dart';
 
 // ------------------------------------------------------------------------------------------------- //
 
-void main() {
+void main() { 
 	
 	if(Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
 

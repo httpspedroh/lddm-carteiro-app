@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../components/drawer.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import '../assets/_constants.dart';
 
 // ------------------------------------------------------------------------------------------------- //
 
@@ -28,8 +29,8 @@ class _DbDebugState extends State<DbDebug> {
 			version: 1,
 			onCreate: (db, recentVersion) {
 
-				// Create a map with "id" (auto_increment), "user_id" (int), "name" (string), "tracking_code" (string), "last_info" (json), "last_update" (datetime)
-				String sql = "CREATE TABLE objects (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR, tracking_code VARCHAR, last_info TEXT, last_update DATETIME)";
+				String sql = "CREATE TABLE objects (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR, tracking_code VARCHAR, label INTEGER, last_info TEXT, last_update DATETIME)";
+
 				db.execute(sql);
 			}
 		);
@@ -45,6 +46,7 @@ class _DbDebugState extends State<DbDebug> {
 
 			"name": name,
 			"tracking_code": trackingCode,
+			"label": Constants.statusAll,
 			"last_info": "{}",
 			"last_update": DateTime.now().toString()
 		};
@@ -68,13 +70,14 @@ class _DbDebugState extends State<DbDebug> {
 
 	// ------------------------------------------------------------ //
 
-	_updateObject(int id, String trackingCode,  String name) async {
+	_updateObject(int id, String trackingCode, int label, String name) async {
 
 		Database db = await _getDatabase();
 		Map<String, dynamic> object = {
 
 			"name": name,
 			"tracking_code": trackingCode,
+			"label": label,
 			"last_info": "{}",
 			"last_update": DateTime.now().toString()
 		};
@@ -140,7 +143,7 @@ class _DbDebugState extends State<DbDebug> {
 
 	// ------------------------------------------------------------ //
 
-	Future _showAlertDialog(BuildContext context, int id, String name, String trackingCode) async {
+	Future _showAlertDialog(BuildContext context, int id, String name, String trackingCode, int label) async {
 
 		TextEditingController controllerTrackingCode = TextEditingController();
 		TextEditingController controllerName = TextEditingController();
@@ -263,7 +266,7 @@ class _DbDebugState extends State<DbDebug> {
 											if(controllerTrackingCode.text.isNotEmpty && controllerName.text.isNotEmpty) {
 
 												if(id == 0) { _createObject(controllerTrackingCode.text, controllerName.text); }
-												else { _updateObject(id, controllerTrackingCode.text, controllerName.text); }
+												else { _updateObject(id, controllerTrackingCode.text, label, controllerName.text); }
 												
 												Navigator.of(context).pop();
 
@@ -321,7 +324,7 @@ class _DbDebugState extends State<DbDebug> {
 			floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
 			floatingActionButton: FloatingActionButton(
 
-				onPressed: () => _showAlertDialog(context, 0, "", ""),
+				onPressed: () => _showAlertDialog(context, 0, "", "", 0),
 				child: const Icon(Icons.add),
 			),
     	);
@@ -456,7 +459,7 @@ class _DbDebugState extends State<DbDebug> {
 
 															IconButton(
 
-																onPressed: () => _showAlertDialog(context, snapshot.data![index]["id"] as int, snapshot.data![index]["name"] as String, snapshot.data![index]["tracking_code"] as String),
+																onPressed: () => _showAlertDialog(context, snapshot.data![index]["id"] as int, snapshot.data![index]["name"] as String, snapshot.data![index]["tracking_code"] as String, snapshot.data![index]["label"] as int),
 																icon: const Icon(Icons.edit_rounded),
 															),
 														],
