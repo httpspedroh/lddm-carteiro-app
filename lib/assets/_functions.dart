@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'object.dart';
 
 // ------------------------------------------------------------------------------------------------- //
 
@@ -16,7 +17,16 @@ class CommonFunctions {
 			version: 1,
 			onCreate: (db, recentVersion) {
 
-				String sql = "CREATE TABLE IF NOT EXISTS objects (id INTEGER PRIMARY KEY AUTOINCREMENT, folder INTEGER DEFAULT 0, name VARCHAR(50) NOT NULL DEFAULT '(Sem nome)', tracking_code VARCHAR(50) NOT NULL DEFAULT '(Sem código)', last_info TEXT DEFAULT NULL, last_update DATETIME DEFAULT NULL);";
+				String sql = "CREATE TABLE IF NOT EXISTS objects ("
+					"id INTEGER PRIMARY KEY AUTOINCREMENT,"
+					"archived INTEGER CHECK (archived IN (0, 1)) DEFAULT 0,"
+					"favorited INTEGER CHECK (favorited IN (0, 1)) DEFAULT 0,"
+					"delivered INTEGER CHECK (delivered IN (0, 1)) DEFAULT 0,"
+					"name VARCHAR(30) NOT NULL DEFAULT '(Sem nome)',"
+					"tracking_code VARCHAR(13) NOT NULL DEFAULT '(Sem código)',"
+					"last_info TEXT DEFAULT NULL,"
+					"last_update DATETIME DEFAULT NULL" 
+				")";
 
 				db.execute(sql);
 			},
@@ -26,18 +36,20 @@ class CommonFunctions {
 
 	// ------------------------------------------------------------- //
 
-	Future<int> insertObject(Map<String, dynamic> object) async {
+	Future<int> insertObject(Object object) async {
 
 		final Database db = await getDatabase();
 
-		int id = await db.insert(
+		try {
 
-			"objects",
-			object,
-			conflictAlgorithm: ConflictAlgorithm.replace,
-		);
+			return await db.insert(
 
-		return id;
+				"objects",
+				object.toMap(),
+				conflictAlgorithm: ConflictAlgorithm.replace,
+			);
+		} 
+		catch(e) { return -1; }
 	}
 
 	// ------------------------------------------------------------- //
@@ -54,23 +66,78 @@ class CommonFunctions {
 		);
 	}
 
-	// ------------------------------------------------------------ //
+	// ------------------------------------------------------------- //
 
-	Future<List<Map<String, dynamic>>> getObjects(int folder) async {
+	Future<int> updateObject(Object object) async {
 
 		final Database db = await getDatabase();
 
-		Future<List<Map<String, dynamic>>> objects = db.rawQuery("SELECT * FROM objects WHERE folder = ? ORDER BY last_update DESC", [folder]);
+		return await db.update(
 
-		return objects;
+			"objects",
+			object.toMap(),
+			where: "id = ?",
+			whereArgs: [object.id],
+		);
 	}
 
 	// ------------------------------------------------------------ //
 
-	String formatDate(String date) {
+
+	// get objects with dynamic optional where
+	Future<List<Object>> getObjects({bool? archived, bool? favorited, bool? delivered}) async {
+
+		final Database db = await getDatabase();
+
+		String where = "";
+
+		if(archived != null) {
+
+			where += "archived = ${archived ? 1 : 0}";
+		}
+
+		if(favorited != null) {
+
+			if(archived != null) where += " AND ";
+
+			where += "favorited = ${favorited ? 1 : 0}";
+		}
+
+		if(delivered != null) {
+
+			if(archived != null || favorited != null) where += " AND ";
+
+			where += "delivered = ${delivered ? 1 : 0}";
+		}
+
+		List<Map<String, dynamic>> maps = await db.query(
+
+			"objects",
+			where: where == "" ? null : where,
+			orderBy: "last_update DESC",
+		);
+
+		return List.generate(maps.length, (index) {
+
+			return Object(
+
+				id: maps[index]["id"],
+				archived: maps[index]["archived"] == 1 ? true : false,
+				favorited: maps[index]["favorited"] == 1 ? true : false,
+				delivered: maps[index]["delivered"] == 1 ? true : false,
+				name: maps[index]["name"],
+				trackingCode: maps[index]["tracking_code"],
+				lastInfo: maps[index]["last_info"],
+				lastUpdate: DateTime.parse(maps[index]["last_update"]),
+			);
+		});
+	}
+
+	// ------------------------------------------------------------ //
+
+	String formatDate(DateTime lastUpdate) {
 
 		DateTime now = DateTime.now();
-		DateTime lastUpdate = DateTime.parse(date);
 
 		// If the last update was > 7 days ago, return the date in the format "Feb 25, 2022"
 		if(now.difference(lastUpdate).inDays > 7) {

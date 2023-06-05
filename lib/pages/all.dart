@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../components/drawer.dart';
-import '../assets/_constants.dart';
+import '../assets/object.dart';
 import '../assets/_functions.dart';
 
 // ------------------------------------------------------------------------------------------------- //
@@ -136,21 +136,54 @@ class _AllObjectsState extends State<AllObjects> {
 											
 											if(controllerTrackingCode.text.isNotEmpty && controllerName.text.isNotEmpty) {
 
-												Map<String, dynamic> object = {
+												// Create object
+												final object = Object(
 
-													"name": controllerName.text,
-													"tracking_code": controllerTrackingCode.text,
-													"last_update": DateTime.now().toIso8601String(),
-												};
+													name: controllerName.text,
+													trackingCode: controllerTrackingCode.text,
+													lastUpdate: DateTime.now(),
+												);
 
-												pst.insertObject(object);
+												Future<int> result = pst.insertObject(object);
 
-												// ----------------------------- //
+												result.then((insertedId) {
 
-												Navigator.of(context).pop();
+													if(insertedId != -1) {
 
-												// Refresh screen
-												setState(() {});
+														// Show snackbar
+														ScaffoldMessenger.of(context).showSnackBar(
+
+															const SnackBar(
+
+																content: Text("Objeto adicionado com sucesso!",
+																	style: TextStyle(color: Colors.white),
+																),
+																backgroundColor: Colors.green,
+															)
+														);
+
+														// Refresh screen
+														setState(() {});
+													}
+													else {
+
+														// Show snackbar
+														ScaffoldMessenger.of(context).showSnackBar(
+
+															const SnackBar(
+
+																content: Text("Erro ao adicionar objeto!",
+																	style: TextStyle(color: Colors.white),
+																),
+																backgroundColor: Colors.red,
+															)
+														);
+													}
+
+													// Close dialog	
+													Navigator.of(context).pop();
+
+												});
 											}
 										}
 									),
@@ -195,9 +228,9 @@ class _AllObjectsState extends State<AllObjects> {
 			// ---------------------------------- //
 
 			// Create body with ListView.builder using data from database
-			body: FutureBuilder<List<Map<String, dynamic>>>(
+			body: FutureBuilder<List<Object>>(
 				
-				future: pst.getObjects(Constants.folderAll),
+				future: pst.getObjects(),
 				builder: (context, snapshot) {
 					
 					return RefreshIndicator(
@@ -224,7 +257,7 @@ class _AllObjectsState extends State<AllObjects> {
 
 	Widget _listView(AsyncSnapshot snapshot) {
 
-		if(snapshot.hasData) {
+		if(snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
 
 			return (snapshot.data!.length == 0 ? const Center(child: Text("Nenhum objeto encontrado 😢")) : 
 			
@@ -234,9 +267,8 @@ class _AllObjectsState extends State<AllObjects> {
 					itemBuilder: (context, index) {
 
 						return Dismissible(
-
+							
 							key: UniqueKey(),
-
 							direction: DismissDirection.horizontal,
 							
 							background: Container(
@@ -259,31 +291,102 @@ class _AllObjectsState extends State<AllObjects> {
 								
 								if (direction == DismissDirection.endToStart) {
 								
-									// print('Deleted');
+									Object toDelete = snapshot.data![index];
+									Future<int> result = pst.deleteObject(toDelete.id!);
 
-									Future<int> result = pst.deleteObject(snapshot.data![index]["id"]);
+									result.then((success) {
 
-									result.then((value) {
+										if(success == 1) {
 
-										if(value == 1) {
+											ScaffoldMessenger.of(context).showSnackBar(
 
+												SnackBar(
 
-											ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Objeto deletado com sucesso")));
+													content: Text("Objeto \"${toDelete.trackingCode}\" deletado com sucesso!", 
+														style: const TextStyle(color: Colors.white)
+													),
 
-											// Refresh screen
-											setState(() {});
+													backgroundColor: Colors.green,
+													action: SnackBarAction(
+
+														label: "DESFAZER",
+														onPressed: () {
+
+															pst.insertObject(toDelete);
+
+															setState(() {});
+														},
+													),
+												)
+											);
 										}
 										else {
 
-											// Show error message
-											ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Erro ao deletar objeto")));
+											ScaffoldMessenger.of(context).showSnackBar(
+												
+												const SnackBar(
+													
+													content: Text("Erro ao deletar objeto", 
+														style: TextStyle(color: Colors.white)
+													),
+
+													backgroundColor: Colors.red,
+												),
+											);
 										}
 									});
 
 								} 
 								else if (direction == DismissDirection.startToEnd) {
 								
-									print('Archived');
+									Object toArchive = snapshot.data![index];
+
+									toArchive.archived = true;
+
+									Future<int> result = pst.updateObject(toArchive);
+
+									result.then((success) {
+
+										if(success == 1) {
+
+											ScaffoldMessenger.of(context).showSnackBar(
+
+												SnackBar(
+
+													backgroundColor: Colors.green,
+													content: const Text("Objeto arquivado com sucesso", 
+													
+														style: TextStyle(color: Colors.white)
+													),
+													action: SnackBarAction(
+
+														label: "DESFAZER",
+														onPressed: () {
+
+															toArchive.archived = false;
+
+															pst.updateObject(toArchive);
+
+															setState(() {});
+														},
+													),
+												)
+											);
+
+											setState(() {});
+										}
+										else {
+
+											ScaffoldMessenger.of(context).showSnackBar(
+												
+												const SnackBar(
+													
+													content: Text("Erro ao arquivar objeto"),
+													backgroundColor: Colors.red,
+												),
+											);
+										}
+									});
 								}
 							},
 							
@@ -330,13 +433,13 @@ class _AllObjectsState extends State<AllObjects> {
 																	const Padding(padding: EdgeInsets.only(top: 15)),
 
 																	// Name
-																	Text(snapshot.data![index]["name"],
-																		
+																	Text(snapshot.data![index].name,
+																	
 																		overflow: TextOverflow.fade,
 																		style: const TextStyle(
 																			
 																			fontSize: 15,
-																			fontWeight: FontWeight.normal,
+																			fontWeight: FontWeight.bold,
 																			// fontWeight: index > 0 ? FontWeight.normal : FontWeight.bold,
 																		),
 																	),
@@ -345,7 +448,7 @@ class _AllObjectsState extends State<AllObjects> {
 																	const Spacer(),
 
 																	// Last update formatted with a function
-																	Text(pst.formatDate(snapshot.data![index]["last_update"] as String),
+																	Text(pst.formatDate(snapshot.data![index].lastUpdate),
 													
 																		overflow: TextOverflow.fade,
 																		style: const TextStyle(
@@ -363,7 +466,6 @@ class _AllObjectsState extends State<AllObjects> {
 															Row(
 																
 																children: const [
-
 
 																	Icon(Icons.arrow_right_alt_rounded,
 																		size: 15,
