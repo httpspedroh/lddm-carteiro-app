@@ -7,7 +7,6 @@ import 'pages/details.dart';
 import 'pages/login.dart';
 import 'pages/register.dart';
 import 'pages/about.dart';
-import 'pages/db_debug.dart';
 
 // ------------------------------------------------------------------------------------------------- //
 
@@ -45,7 +44,6 @@ class MyApp extends StatelessWidget {
 				"/login": (context) => const Login(), // Login
 				"/register": (context) => const Register(), // Registro
 				"/about": (context) => const About(), // Sobre nós
-				"/db_debug": (context) => const DbDebug(), // Banco de dados
 			},
 
 			home: const AllObjects(),

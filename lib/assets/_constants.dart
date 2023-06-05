@@ -1,7 +1,7 @@
 class Constants {
 
-	static int statusAll = 0;
-	static int statusFav = 1;
-	static int statusDelivered = 2;
-	static int statusArchived = 3;
+	static int folderAll = 0;
+	static int folderFav = 1;
+	static int folderDelivered = 2;
+	static int folderArchived = 3;
 }

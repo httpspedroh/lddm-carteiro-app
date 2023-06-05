@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/drawer.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import '../assets/_constants.dart';
+import '../assets/_functions.dart';
 
 // ------------------------------------------------------------------------------------------------- //
 
@@ -17,112 +17,7 @@ class AllObjects extends StatefulWidget {
 
 class _AllObjectsState extends State<AllObjects> {
 
-	// ----------------------------------------------------------------- //
-
-	_getDatabase() async {
-		
-		final dbPath = await getDatabasesPath();
-		final dbFile = join(dbPath, "postino.bd");
-
-		var db = await openDatabase(
-
-			dbFile,
-			version: 1,
-			onCreate: (db, recentVersion) {
-
-				// Create a map with "id" (auto_increment), "user_id" (int), "name" (string), "tracking_code" (string), "last_info" (json), "last_update" (datetime)
-				String sql = "CREATE TABLE objects (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR, tracking_code VARCHAR, last_info TEXT, last_update DATETIME)";
-				db.execute(sql);
-			}
-		);
-		return db;
-	}
-
-	// ----------------------------------------------------------------- //
-
-	_createObject(String name, String trackingCode) async {
-
-		Database db = await _getDatabase();
-		Map<String, dynamic> object = {
-
-			"name": name,
-			"tracking_code": trackingCode,
-			"last_info": "{}",
-			"last_update": DateTime.now().toString()
-		};
-
-		int id = await db.insert("objects", object);
-		print("Saved: $id");
-	}
-
-	// ----------------------------------------------------------------- //
-
-	Future<List<Map<String, dynamic>>> _getAllObjects() async {
-
-		Database db = await _getDatabase();
-		String sql = "SELECT * FROM objects";
-		List<Map<String, dynamic>> objects = await db.rawQuery(sql);
-
-		// if objects is empty, return an empty list
-		if(objects.isEmpty) { return []; }
-		else { return objects; }
-	}
-
-	// ----------------------------------------------------------------- //
-
-	String _formatDate(String date) {
-
-		DateTime now = DateTime.now();
-		DateTime lastUpdate = DateTime.parse(date);
-
-		// If the last update was > 7 days ago, return the date in the format "Feb 25, 2022"
-		if(now.difference(lastUpdate).inDays > 7) {
-
-			return "${lastUpdate.day.toString().padLeft(2, '0')}/${lastUpdate.month.toString().padLeft(2, '0')}/${lastUpdate.year.toString()}";
-		}
-
-		// If the last update was > 1 day ago, return the date in the format "2 days ago"
-		else if(now.difference(lastUpdate).inDays >= 1) {
-
-			return "${now.difference(lastUpdate).inDays} dias atrás";
-		}
-
-		// If the last update was > 1 hour ago, return the date in the format "2h ago"
-		else if(now.difference(lastUpdate).inHours >= 1) {
-
-			return "${now.difference(lastUpdate).inHours}h atrás";
-		}
-
-		// If the last update was > 1 minute ago, return the date in the format "2 min ago"
-		else if(now.difference(lastUpdate).inMinutes >= 1) {
-
-			return "${now.difference(lastUpdate).inMinutes} min atrás";
-		}
-
-		// If the last update was > 1 second ago, return the date in the format "2 sec ago"
-		else if(now.difference(lastUpdate).inSeconds > 1) {
-
-			return "${now.difference(lastUpdate).inSeconds} seg atrás";
-		}
-		return "1 seg atrás";
-	}
-
-	// ----------------------------------------------------------------- //
-
-	_deleteObject(String name) async {
-
-		Database db = await _getDatabase();
-		int deleted = await db.delete("objects", where: "name = ?", whereArgs: [name]);
-
-		print("Deleted: $deleted");
-	}
-
-	_deleteAllObjects() async {
-
-		Database db = await _getDatabase();
-		int deleted = await db.delete("objects");
-		print("Deleted: $deleted");
-	}
+	final pst = CommonFunctions();
 
 	// ----------------------------------------------------------------- //
 
@@ -241,8 +136,17 @@ class _AllObjectsState extends State<AllObjects> {
 											
 											if(controllerTrackingCode.text.isNotEmpty && controllerName.text.isNotEmpty) {
 
-												_createObject(controllerName.text, controllerTrackingCode.text);
-												
+												Map<String, dynamic> object = {
+
+													"name": controllerName.text,
+													"trackingCode": controllerTrackingCode.text,
+													"lastUpdate": DateTime.now().toString(),
+												};
+
+												pst.insertObject(object);
+
+												// ----------------------------- //
+
 												Navigator.of(context).pop();
 
 												// Refresh screen
@@ -293,7 +197,7 @@ class _AllObjectsState extends State<AllObjects> {
 			// Create body with ListView.builder using data from database
 			body: FutureBuilder<List<Map<String, dynamic>>>(
 				
-				future: _getAllObjects(),
+				future: pst.getObjects(Constants.folderAll),
 				builder: (context, snapshot) {
 					
 					return RefreshIndicator(
@@ -525,7 +429,7 @@ class _AllObjectsState extends State<AllObjects> {
 																const Spacer(),
 
 																// Last update formatted with a function
-																Text(_formatDate(snapshot.data![index]["last_update"] as String),
+																Text(pst.formatDate(snapshot.data![index]["last_update"] as String),
 												
 																	overflow: TextOverflow.fade,
 																	style: const TextStyle(
