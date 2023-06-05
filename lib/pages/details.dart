@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../assets/_functions.dart';
+import '../assets/object.dart';
 
 // ------------------------------------------------------------------------------------------------- //
 
@@ -14,10 +16,17 @@ class Details extends StatefulWidget {
 
 class _DetailsState extends State<Details> {
 
-	// ------------------------------------------------------------ //
+	final pst = CommonFunctions();
+
+	// ----------------------------------------------------------------- //
 
   	@override
   	Widget build(BuildContext context) {
+
+		// get obj in argument 0
+		Object obj = ModalRoute.of(context)!.settings.arguments as Object;
+
+		// ------------------------------------------------------------------- //
 
 		return Scaffold(
 
@@ -42,15 +51,107 @@ class _DetailsState extends State<Details> {
 
 								IconButton(
 
-									icon: const Icon(Icons.archive_outlined),
+									icon: obj.archived == true ? const Icon(Icons.unarchive_rounded) : const Icon(Icons.archive_rounded),
+									onPressed: () {
+
+										obj.archived = obj.archived == false ? true : false;
+
+										Future<int> result = pst.updateObject(obj);
+
+										result.then((success) {
+
+											if(success == 1) {
+
+												ScaffoldMessenger.of(context).showSnackBar(
+
+													SnackBar(
+
+														backgroundColor: Colors.green,
+														content: Text(obj.archived == false ? "Objeto desarquivado com sucesso!" : "Objeto arquivado com sucesso!",
+														
+															style: const TextStyle(color: Colors.white)
+														),
+													)
+												);
+
+												setState(() {});
+											}
+											else {
+
+												ScaffoldMessenger.of(context).showSnackBar(
+													
+													SnackBar(
+														
+														content: Text(obj.archived == false ? "Erro ao arquivar objeto!" : "Erro ao desarquivar objeto!",
+															style: const TextStyle(color: Colors.white)
+														),
+
+														backgroundColor: Colors.red,
+													),
+												);
+											}
+										});
+									},
+								),
+
+								IconButton(
+
+									icon: const Icon(Icons.edit_rounded),
 									onPressed: () {},
 								),
 
 								IconButton(
 
-									icon: const Icon(Icons.more_vert),
-									onPressed: () {},
+									icon: const Icon(Icons.delete),
+									onPressed: () {
+
+										Future<int> result = pst.deleteObject(obj.id!);
+
+										result.then((success) {
+
+											if(success == 1) {
+
+												ScaffoldMessenger.of(context).showSnackBar(
+
+													SnackBar(
+
+														backgroundColor: Colors.green,
+														content: Text("\"${obj.name}\" excluído com sucesso!", 
+															style: const TextStyle(color: Colors.white)
+														),
+
+														action: SnackBarAction(
+
+															label: "DESFAZER",
+															onPressed: () {
+
+																pst.insertObject(obj);
+															},
+														),
+													)
+												);
+
+												Navigator.pop(context);
+											}
+											else {
+
+												ScaffoldMessenger.of(context).showSnackBar(
+													
+													const SnackBar(
+														
+														content: Text("Erro ao excluir objeto :(", 
+															style: TextStyle(color: Colors.white)
+														),
+
+														backgroundColor: Colors.red,
+													),
+												);
+											}
+										});
+									},
 								),
+
+								const Padding(padding: EdgeInsets.only(right: 10)),
 							],
 
 							expandedHeight: 170.0,
@@ -77,9 +178,7 @@ class _DetailsState extends State<Details> {
 															
 															children: [
 
-																const Text('NL192375795BR', 
-																	style: TextStyle(fontWeight: FontWeight.bold),
-																),
+																Text(obj.trackingCode, style: const TextStyle(fontWeight: FontWeight.bold)),
 
 																const Padding(padding: EdgeInsets.only(right: 5)),
 
@@ -87,17 +186,17 @@ class _DetailsState extends State<Details> {
 															],
 														),
 
-														Row(children: const [
+														Row(children: [
 
-															Text('2 DIAS ATRÁS VIA OBJETO POSTAL'),
+															Text(pst.formatDate(obj.lastUpdate, isDetails: true)),
 														]),
 
 														const Padding(padding: EdgeInsets.only(top: 10)),
 
-														Row(children: const [
+														Row(children: [
 
-															Text('Switch Game',
-																style: TextStyle(fontSize: 30)
+															Text(obj.name,
+																style: const TextStyle(fontSize: 30)
 															),
 														]),
 													],

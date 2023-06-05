@@ -58,21 +58,27 @@ class NavDrawer extends StatelessWidget {
 
 									leading: const Icon(Icons.favorite_border),
 									title: const Text("Favoritos"),
-									onTap: () => {},
+									onTap: () => {
+										Navigator.pushNamed(context, '/favorited'),
+									},
 								),
 
 								ListTile(
 
 									leading: const Icon(Icons.check),
 									title: const Text("Entregues"),
-									onTap: () => {},
+									onTap: () => {
+										Navigator.pushNamed(context, '/delivered'),
+									},
 								),
 
 								ListTile(
 
 									leading: const Icon(Icons.archive),
 									title: const Text("Arquivados"),
-									onTap: () => {},
+									onTap: () => {
+										Navigator.pushNamed(context, '/archived'),
+									},
 								),
 							],
 						),

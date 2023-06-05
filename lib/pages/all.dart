@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import '../components/drawer.dart';
 import '../assets/object.dart';
@@ -5,12 +7,17 @@ import '../assets/_functions.dart';
 
 // ------------------------------------------------------------------------------------------------- //
 
+// create a stateful widget with optional parameters from navigator
 class AllObjects extends StatefulWidget {
 
-  	const AllObjects({super.key});
+	final bool? isArchived;
+	final bool? isFavorited;
+	final bool? isDelivered;
 
-  	@override
-  	State<AllObjects> createState() => _AllObjectsState();
+	const AllObjects({this.isArchived, this.isFavorited, this.isDelivered, Key? key}) : super(key: key);
+
+	@override
+	_AllObjectsState createState() => _AllObjectsState();
 }
 
 // ------------------------------------------------------------------------------------------------- //
@@ -172,7 +179,7 @@ class _AllObjectsState extends State<AllObjects> {
 
 															const SnackBar(
 
-																content: Text("Erro ao adicionar objeto!",
+																content: Text("Erro ao adicionar objeto :(",
 																	style: TextStyle(color: Colors.white),
 																),
 																backgroundColor: Colors.red,
@@ -210,7 +217,21 @@ class _AllObjectsState extends State<AllObjects> {
 
 				backgroundColor: Theme.of(context).brightness == Brightness.light ? Theme.of(context).colorScheme.secondary : null,
 				centerTitle: true,
-				title: const Text("Todos", style: TextStyle(fontWeight: FontWeight.bold)),
+				title: Builder(
+				builder: 
+				
+					(BuildContext context) {
+
+						String title = 'Todos';
+						
+						if (widget.isArchived == true) { title = 'Arquivados'; }
+						else if (widget.isFavorited == true) { title = 'Favoritos'; }
+						else if (widget.isDelivered == true) { title = 'Entregues'; }
+
+						return Text(title, style: const TextStyle(fontWeight: FontWeight.bold));
+					},
+				),
+
 				actions: const [
 
 					Padding(
@@ -230,7 +251,7 @@ class _AllObjectsState extends State<AllObjects> {
 			// Create body with ListView.builder using data from database
 			body: FutureBuilder<List<Object>>(
 				
-				future: pst.getObjects(),
+				future: pst.getObjects(archived: widget.isArchived, favorited: widget.isFavorited, delivered: widget.isDelivered),
 				builder: (context, snapshot) {
 					
 					return RefreshIndicator(
@@ -273,10 +294,10 @@ class _AllObjectsState extends State<AllObjects> {
 							
 							background: Container(
 
-								color: Colors.green,
+								color: Colors.purple,
 								alignment: Alignment.centerLeft,
 								padding: const EdgeInsets.only(left: 25.0),
-								child: const Icon(Icons.archive),
+								child: widget.isArchived == true ? const Icon(Icons.unarchive) : const Icon(Icons.archive),
 							),
 
 							secondaryBackground: Container(
@@ -302,11 +323,11 @@ class _AllObjectsState extends State<AllObjects> {
 
 												SnackBar(
 
-													content: Text("Objeto \"${toDelete.trackingCode}\" deletado com sucesso!", 
+													backgroundColor: Colors.green,
+													content: Text("\"${toDelete.name}\" excluído com sucesso!", 
 														style: const TextStyle(color: Colors.white)
 													),
 
-													backgroundColor: Colors.green,
 													action: SnackBarAction(
 
 														label: "DESFAZER",
@@ -319,6 +340,8 @@ class _AllObjectsState extends State<AllObjects> {
 													),
 												)
 											);
+
+											Navigator.pop(context);
 										}
 										else {
 
@@ -326,7 +349,7 @@ class _AllObjectsState extends State<AllObjects> {
 												
 												const SnackBar(
 													
-													content: Text("Erro ao deletar objeto", 
+													content: Text("Erro ao excluir objeto :(", 
 														style: TextStyle(color: Colors.white)
 													),
 
@@ -335,13 +358,12 @@ class _AllObjectsState extends State<AllObjects> {
 											);
 										}
 									});
-
 								} 
 								else if (direction == DismissDirection.startToEnd) {
 								
 									Object toArchive = snapshot.data![index];
 
-									toArchive.archived = true;
+									toArchive.archived = toArchive.archived == false ? true : false;
 
 									Future<int> result = pst.updateObject(toArchive);
 
@@ -354,16 +376,17 @@ class _AllObjectsState extends State<AllObjects> {
 												SnackBar(
 
 													backgroundColor: Colors.green,
-													content: const Text("Objeto arquivado com sucesso", 
+													content: Text(widget.isArchived == true ? "\"${toArchive.name}\" desarquivado com sucesso!" : "\"${toArchive.name}\" arquivado com sucesso!",
 													
-														style: TextStyle(color: Colors.white)
+														style: const TextStyle(color: Colors.white)
 													),
+
 													action: SnackBarAction(
 
 														label: "DESFAZER",
 														onPressed: () {
 
-															toArchive.archived = false;
+															toArchive.archived = toArchive.archived == false ? true : false;
 
 															pst.updateObject(toArchive);
 
@@ -379,9 +402,12 @@ class _AllObjectsState extends State<AllObjects> {
 
 											ScaffoldMessenger.of(context).showSnackBar(
 												
-												const SnackBar(
+												SnackBar(
 													
-													content: Text("Erro ao arquivar objeto"),
+													content: Text(widget.isArchived == true ? "Erro ao desarquivar objeto :(" : "Erro ao arquivar objeto :(",
+														style: const TextStyle(color: Colors.white)
+													),
+
 													backgroundColor: Colors.red,
 												),
 											);
@@ -392,7 +418,11 @@ class _AllObjectsState extends State<AllObjects> {
 							
 							child: InkWell(
 
-								onTap: () => Navigator.pushNamed(context, "/details"),
+								onTap: () {
+
+									Navigator.pushNamed(context, "/details", arguments: snapshot.data![index]);
+								},
+
 								child: Container(
 								
 									color: index % 2 != 0 ? Colors.transparent : Colors.black12,

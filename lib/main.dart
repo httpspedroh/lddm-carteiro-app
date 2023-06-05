@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'pages/all.dart';
@@ -39,7 +38,10 @@ class MyApp extends StatelessWidget {
 			initialRoute: "/",
 			routes: {
 
-				"/all":  (context) => const AllObjects(), // Tela principal
+				"/all":  (context) => const AllObjects(isArchived: false), // Tela principal (todos os objetos)
+				"/archived": (context) => const AllObjects(isArchived: true), // Tela de arquivados
+				"/favorited": (context) => const AllObjects(isFavorited: true), // Tela de favoritos
+				"/delivered": (context) => const AllObjects(isDelivered: true), // Tela de entregues
 				"/details": (context) => const Details(), // Principal funcionalidade
 				"/login": (context) => const Login(), // Login
 				"/register": (context) => const Register(), // Registro

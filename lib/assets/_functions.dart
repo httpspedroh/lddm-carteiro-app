@@ -135,44 +135,54 @@ class CommonFunctions {
 
 	// ------------------------------------------------------------ //
 
-	String formatDate(DateTime lastUpdate) {
+	String formatDate(DateTime lastUpdate, {bool? isDetails}) {
 
 		DateTime now = DateTime.now();
 
-		// If the last update was > 7 days ago, return the date in the format "Feb 25, 2022"
-		if(now.difference(lastUpdate).inDays > 7) {
+		if(isDetails == true) {
 
-			return "${lastUpdate.day.toString().padLeft(2, '0')}/${lastUpdate.month.toString().padLeft(2, '0')}/${lastUpdate.year.toString()}";
+			// Return "HOJE", "ONTEM" or "X DIAS ATRÁS"
+			if(now.difference(lastUpdate).inDays == 0) { return "POSTADO HOJE"; }
+			else if(now.difference(lastUpdate).inDays == 1) { return "POSTADO ONTEM"; }
+			else { return "POSTADO HÁ ${now.difference(lastUpdate).inDays} DIAS ATRÁS"; }
 		}
+		else {
 
-		// If the last update was == 1 day ago, return the date in the format "Yesterday"
-		else if(now.difference(lastUpdate).inDays > 1) {
+			// If the last update was > 7 days ago, return the date in the format "Feb 25, 2022"
+			if(now.difference(lastUpdate).inDays > 7) {
 
-			return "Ontem";
-		}
+				return "${lastUpdate.day.toString().padLeft(2, '0')}/${lastUpdate.month.toString().padLeft(2, '0')}/${lastUpdate.year.toString()}";
+			}
 
-		// If the last update was > 1 day ago, return the date in the format "2 days ago"
-		else if(now.difference(lastUpdate).inDays > 1) {
+			// If the last update was == 1 day ago, return the date in the format "Yesterday"
+			else if(now.difference(lastUpdate).inDays == 1) {
 
-			return "${now.difference(lastUpdate).inDays} dias atrás";
-		}
+				return "Ontem";
+			}
 
-		// If the last update was > 1 hour ago, return the date in the format "2h ago"
-		else if(now.difference(lastUpdate).inHours >= 1) {
+			// If the last update was > 1 day ago, return the date in the format "2 days ago"
+			else if(now.difference(lastUpdate).inDays > 1) {
 
-			return "${now.difference(lastUpdate).inHours}h atrás";
-		}
+				return "${now.difference(lastUpdate).inDays} dias atrás";
+			}
 
-		// If the last update was > 1 minute ago, return the date in the format "2 min ago"
-		else if(now.difference(lastUpdate).inMinutes >= 1) {
+			// If the last update was > 1 hour ago, return the date in the format "2h ago"
+			else if(now.difference(lastUpdate).inHours >= 1) {
 
-			return "${now.difference(lastUpdate).inMinutes} min atrás";
-		}
+				return "${now.difference(lastUpdate).inHours}h atrás";
+			}
 
-		// If the last update was > 1 second ago, return the date in the format "2 sec ago"
-		else if(now.difference(lastUpdate).inSeconds > 1) {
+			// If the last update was > 1 minute ago, return the date in the format "2 min ago"
+			else if(now.difference(lastUpdate).inMinutes >= 1) {
 
-			return "${now.difference(lastUpdate).inSeconds} seg atrás";
+				return "${now.difference(lastUpdate).inMinutes} min atrás";
+			}
+
+			// If the last update was > 1 second ago, return the date in the format "2 sec ago"
+			else if(now.difference(lastUpdate).inSeconds > 1) {
+
+				return "${now.difference(lastUpdate).inSeconds} seg atrás";
+			}
 		}
 		return "1 seg atrás";
 	}
