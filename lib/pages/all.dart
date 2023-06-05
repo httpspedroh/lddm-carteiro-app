@@ -139,8 +139,8 @@ class _AllObjectsState extends State<AllObjects> {
 												Map<String, dynamic> object = {
 
 													"name": controllerName.text,
-													"trackingCode": controllerTrackingCode.text,
-													"lastUpdate": DateTime.now().toString(),
+													"tracking_code": controllerTrackingCode.text,
+													"last_update": DateTime.now().toIso8601String(),
 												};
 
 												pst.insertObject(object);
@@ -207,144 +207,6 @@ class _AllObjectsState extends State<AllObjects> {
 					);
 				},
 			),
-
-			// ---------------------------------- //
-
-			// body: Column(
-
-			// 	children: [
-
-			// 		// ---------------------------------- //
-					
-			// 		Expanded(
-
-			// 			child: ListView.builder(
-
-			// 				itemCount: 3,
-			// 				itemBuilder: (context, index) {
-
-			// 					return InkWell(
-
-			// 						onTap: () => Navigator.pushNamed(context, "/details"),
-    		// 						child: Container(
-									
-			// 							color: index % 2 != 0 ? Colors.transparent : Colors.black12,
-			// 							child: Row(
-							
-			// 								children: [
-												
-			// 									Container(
-
-			// 										height: 90,
-			// 										width: 90,
-			// 										padding: const EdgeInsets.only(top: 17, bottom: 17),
-			// 										child: const CircleAvatar(
-
-			// 											backgroundColor: Color.fromARGB(255, 203, 100, 221),
-			// 											child: Icon(Icons.delivery_dining_rounded,
-			// 												color: Colors.black,
-			// 												size: 30,
-			// 											),
-			// 										),
-			// 									),
-												
-
-			// 									Expanded(
-													
-			// 										child: Container(
-														
-			// 											padding: const EdgeInsets.only(top: 15, bottom: 20, right: 15),
-			// 											child: Column(
-
-			// 												crossAxisAlignment: CrossAxisAlignment.stretch,
-			// 												children: [
-																
-			// 													Row(
-																	
-			// 														children:  [
-
-			// 															const Padding(padding: EdgeInsets.only(top: 15)),
-
-			// 															Text("Switch Game",
-
-			// 																textAlign: TextAlign.center,
-			// 																style: TextStyle(
-
-			// 																	fontSize: 15,
-			// 																	fontWeight: index > 0 ? FontWeight.normal : FontWeight.bold,
-			// 																),
-			// 															),
-
-			// 															const Spacer(),
-
-			// 															Text("13 min atrás",
-
-			// 																style: TextStyle(
-
-			// 																	fontSize: 10,
-			// 																	fontWeight: index > 0 ? FontWeight.normal : FontWeight.bold,
-			// 																),
-			// 															),
-			// 														],
-			// 													),
-																
-			// 													const Padding(padding: EdgeInsets.only(top: 12)),
-
-			// 													Row(
-																	
-			// 														children: const [
-
-
-			// 															Icon(Icons.arrow_right_alt_rounded,
-			// 																size: 15,
-			// 															),
-
-			// 															Padding(padding: EdgeInsets.only(left: 5)),
-
-			// 															Text("Saiu para entrega ao destinatário",
-																			
-			// 																overflow: TextOverflow.fade,
-			// 																style: TextStyle(fontSize: 13),
-			// 															),
-
-			// 														],
-			// 													),
-
-			// 													const Padding(padding: EdgeInsets.only(top: 5)),
-
-			// 													Row(
-																	
-			// 														children: const [
-
-			// 															Icon(Icons.location_on_rounded,
-			// 																size: 15,
-			// 															),
-
-			// 															Padding(padding: EdgeInsets.only(left: 5)),
-
-			// 															Text("CDD PAMPULHA - BELO HORIZONTE/MG",
-																			
-			// 																overflow: TextOverflow.fade,
-			// 																style: TextStyle(fontSize: 13),
-			// 															),
-
-			// 														],
-			// 													),
-			// 												], 
-			// 											),
-			// 										),
-			// 									),
-			// 								],
-			// 							)
-			// 						),
-			// 					);
-			// 				},
-			// 			),
-			// 		),
-
-			// 		// ---------------------------------- //
-			// 	],
-			// ),
 			
 			// ---------------------------------- //
 
@@ -371,128 +233,184 @@ class _AllObjectsState extends State<AllObjects> {
 					itemCount: snapshot.data!.length,
 					itemBuilder: (context, index) {
 
-						return InkWell(
+						return Dismissible(
 
-							onTap: () => Navigator.pushNamed(context, "/details"),
-							child: Container(
+							key: UniqueKey(),
+
+							direction: DismissDirection.horizontal,
 							
-								color: index % 2 != 0 ? Colors.transparent : Colors.black12,
-								child: Row(
-					
-									children: [
-										
-										Container(
+							background: Container(
 
-											height: 90,
-											width: 90,
-											padding: const EdgeInsets.only(top: 17, bottom: 17),
-											child: const CircleAvatar(
+								color: Colors.green,
+								alignment: Alignment.centerLeft,
+								padding: const EdgeInsets.only(left: 25.0),
+								child: const Icon(Icons.archive),
+							),
 
-												backgroundColor: Color.fromARGB(255, 203, 100, 221),
-												child: Icon(Icons.delivery_dining_rounded,
-													color: Colors.black,
-													size: 30,
-												),
-											),
-										),
-										
+							secondaryBackground: Container(
+								
+								color: Colors.red,
+								alignment: Alignment.centerRight,
+								padding: const EdgeInsets.only(right: 25.0),
+								child: const Icon(Icons.delete),
+							),
 
-										Expanded(
+							onDismissed: (direction) {
+								
+								if (direction == DismissDirection.endToStart) {
+								
+									// print('Deleted');
+
+									Future<int> result = pst.deleteObject(snapshot.data![index]["id"]);
+
+									result.then((value) {
+
+										if(value == 1) {
+
+
+											ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Objeto deletado com sucesso")));
+
+											// Refresh screen
+											setState(() {});
+										}
+										else {
+
+											// Show error message
+											ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Erro ao deletar objeto")));
+										}
+									});
+
+								} 
+								else if (direction == DismissDirection.startToEnd) {
+								
+									print('Archived');
+								}
+							},
+							
+							child: InkWell(
+
+								onTap: () => Navigator.pushNamed(context, "/details"),
+								child: Container(
+								
+									color: index % 2 != 0 ? Colors.transparent : Colors.black12,
+									child: Row(
+						
+										children: [
 											
-											child: Container(
-												
-												padding: const EdgeInsets.only(top: 15, bottom: 20, right: 15),
-												child: Column(
+											Container(
 
-													crossAxisAlignment: CrossAxisAlignment.stretch,
-													children: [
-														
-														Row(
-															
-															children:  [
+												height: 90,
+												width: 90,
+												padding: const EdgeInsets.only(top: 17, bottom: 17),
+												child: const CircleAvatar(
 
-																const Padding(padding: EdgeInsets.only(top: 15)),
-
-																// Name
-																Text(snapshot.data![index]["name"],
-																	
-																	overflow: TextOverflow.fade,
-																	style: const TextStyle(
-																		
-																		fontSize: 15,
-																		fontWeight: FontWeight.normal,
-																		// fontWeight: index > 0 ? FontWeight.normal : FontWeight.bold,
-																	),
-																),
-
-																
-																const Spacer(),
-
-																// Last update formatted with a function
-																Text(pst.formatDate(snapshot.data![index]["last_update"] as String),
-												
-																	overflow: TextOverflow.fade,
-																	style: const TextStyle(
-																		
-																		fontSize: 10,
-																		fontWeight: FontWeight.normal,
-																		// fontWeight: index > 0 ? FontWeight.normal : FontWeight.bold,
-																	),
-																),
-															],
-														),
-														
-														const Padding(padding: EdgeInsets.only(top: 12)),
-
-														Row(
-															
-															children: const [
-
-
-																Icon(Icons.arrow_right_alt_rounded,
-																	size: 15,
-																),
-
-																Padding(padding: EdgeInsets.only(left: 5)),
-
-																Text("Saiu para entrega ao destinatário",
-																	
-																	overflow: TextOverflow.fade,
-																	style: TextStyle(fontSize: 13),
-																),
-
-															],
-														),
-
-														const Padding(padding: EdgeInsets.only(top: 5)),
-
-														Row(
-															
-															children: const [
-
-																Icon(Icons.location_on_rounded,
-																	size: 15,
-																),
-
-																Padding(padding: EdgeInsets.only(left: 5)),
-
-																Text("CDD PAMPULHA - BELO HORIZONTE/MG",
-																	
-																	overflow: TextOverflow.fade,
-																	style: TextStyle(fontSize: 13),
-																),
-
-															],
-														),
-													], 
+													backgroundColor: Color.fromARGB(255, 203, 100, 221),
+													child: Icon(Icons.delivery_dining_rounded,
+														color: Colors.black,
+														size: 30 ,
+													),
 												),
 											),
-										),
-									],
-								)
+											
+
+											Expanded(
+												
+												child: Container(
+													
+													padding: const EdgeInsets.only(top: 15, bottom: 20, right: 15),
+													child: Column(
+
+														crossAxisAlignment: CrossAxisAlignment.stretch,
+														children: [
+															
+															Row(
+																
+																children:  [
+
+																	const Padding(padding: EdgeInsets.only(top: 15)),
+
+																	// Name
+																	Text(snapshot.data![index]["name"],
+																		
+																		overflow: TextOverflow.fade,
+																		style: const TextStyle(
+																			
+																			fontSize: 15,
+																			fontWeight: FontWeight.normal,
+																			// fontWeight: index > 0 ? FontWeight.normal : FontWeight.bold,
+																		),
+																	),
+
+																	
+																	const Spacer(),
+
+																	// Last update formatted with a function
+																	Text(pst.formatDate(snapshot.data![index]["last_update"] as String),
+													
+																		overflow: TextOverflow.fade,
+																		style: const TextStyle(
+																			
+																			fontSize: 10,
+																			fontWeight: FontWeight.normal,
+																			// fontWeight: index > 0 ? FontWeight.normal : FontWeight.bold,
+																		),
+																	),
+																],
+															),
+															
+															const Padding(padding: EdgeInsets.only(top: 12)),
+
+															Row(
+																
+																children: const [
+
+
+																	Icon(Icons.arrow_right_alt_rounded,
+																		size: 15,
+																	),
+
+																	Padding(padding: EdgeInsets.only(left: 5)),
+
+																	Text("Saiu para entrega ao destinatário",
+																		
+																		overflow: TextOverflow.fade,
+																		style: TextStyle(fontSize: 13),
+																	),
+
+																],
+															),
+
+															const Padding(padding: EdgeInsets.only(top: 5)),
+
+															Row(
+																
+																children: const [
+
+																	Icon(Icons.location_on_rounded,
+																		size: 15,
+																	),
+
+																	Padding(padding: EdgeInsets.only(left: 5)),
+
+																	Text("CDD PAMPULHA - BELO HORIZONTE/MG",
+																		
+																		overflow: TextOverflow.fade,
+																		style: TextStyle(fontSize: 13),
+																	),
+
+																],
+															),
+														], 
+													),
+												),
+											),
+										],
+									)
+								),
 							),
 						);
 					},
+						
 				)
 			);
 		}

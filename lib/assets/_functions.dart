@@ -16,7 +16,7 @@ class CommonFunctions {
 			version: 1,
 			onCreate: (db, recentVersion) {
 
-				String sql = "CREATE TABLE objects (id INTEGER PRIMARY KEY AUTOINCREMENT, folder INTEGER, name VARCHAR, tracking_code VARCHAR, last_info TEXT, last_update DATETIME)";
+				String sql = "CREATE TABLE IF NOT EXISTS objects (id INTEGER PRIMARY KEY AUTOINCREMENT, folder INTEGER DEFAULT 0, name VARCHAR(50) NOT NULL DEFAULT '(Sem nome)', tracking_code VARCHAR(50) NOT NULL DEFAULT '(Sem código)', last_info TEXT DEFAULT NULL, last_update DATETIME DEFAULT NULL);";
 
 				db.execute(sql);
 			},
@@ -30,7 +30,28 @@ class CommonFunctions {
 
 		final Database db = await getDatabase();
 
-		return await db.insert("objects", object);
+		int id = await db.insert(
+
+			"objects",
+			object,
+			conflictAlgorithm: ConflictAlgorithm.replace,
+		);
+
+		return id;
+	}
+
+	// ------------------------------------------------------------- //
+
+	Future<int> deleteObject(int id) async {
+
+		final Database db = await getDatabase();
+		
+		return await db.delete(
+
+			"objects",
+			where: "id = ?",
+			whereArgs: [id],
+		);
 	}
 
 	// ------------------------------------------------------------ //
@@ -39,13 +60,9 @@ class CommonFunctions {
 
 		final Database db = await getDatabase();
 
-		return await db.query(
+		Future<List<Map<String, dynamic>>> objects = db.rawQuery("SELECT * FROM objects WHERE folder = ? ORDER BY last_update DESC", [folder]);
 
-			"objects",
-			where: "folder = ?",
-			whereArgs: [folder],
-			orderBy: "last_update DESC",
-		);
+		return objects;
 	}
 
 	// ------------------------------------------------------------ //
