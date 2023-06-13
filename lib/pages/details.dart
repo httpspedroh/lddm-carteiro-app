@@ -45,109 +45,16 @@ class _DetailsState extends State<Details> {
 
 								IconButton(
 
-									icon: const Icon(Icons.favorite_outline_rounded),
-									onPressed: () {},
-								),
-
-								IconButton(
-
-									icon: obj.archived == true ? const Icon(Icons.unarchive_rounded) : const Icon(Icons.archive_rounded),
+									icon: Icon(obj.favorited == true ? Icons.favorite : Icons.favorite_border),
 									onPressed: () {
 
-										obj.archived = obj.archived == false ? true : false;
+										setState(() {
 
-										Future<int> result = pst.updateObject(obj);
-
-										result.then((success) {
-
-											if(success == 1) {
-
-												ScaffoldMessenger.of(context).showSnackBar(
-
-													SnackBar(
-
-														backgroundColor: Colors.green,
-														content: Text(obj.archived == false ? "Objeto desarquivado com sucesso!" : "Objeto arquivado com sucesso!",
-														
-															style: const TextStyle(color: Colors.white)
-														),
-													)
-												);
-
-												setState(() {});
-											}
-											else {
-
-												ScaffoldMessenger.of(context).showSnackBar(
-													
-													SnackBar(
-														
-														content: Text(obj.archived == false ? "Erro ao arquivar objeto!" : "Erro ao desarquivar objeto!",
-															style: const TextStyle(color: Colors.white)
-														),
-
-														backgroundColor: Colors.red,
-													),
-												);
-											}
+											obj.favorited = !obj.favorited!;
 										});
-									},
-								),
 
-								IconButton(
-
-									icon: const Icon(Icons.edit_rounded),
-									onPressed: () {},
-								),
-
-								IconButton(
-
-									icon: const Icon(Icons.delete),
-									onPressed: () {
-
-										Future<int> result = pst.deleteObject(obj.id!);
-
-										result.then((success) {
-
-											if(success == 1) {
-
-												ScaffoldMessenger.of(context).showSnackBar(
-
-													SnackBar(
-
-														backgroundColor: Colors.green,
-														content: Text("\"${obj.name}\" excluído com sucesso!", 
-															style: const TextStyle(color: Colors.white)
-														),
-
-														action: SnackBarAction(
-
-															label: "DESFAZER",
-															onPressed: () {
-
-																pst.insertObject(obj);
-															},
-														),
-													)
-												);
-
-												Navigator.pop(context);
-											}
-											else {
-
-												ScaffoldMessenger.of(context).showSnackBar(
-													
-													const SnackBar(
-														
-														content: Text("Erro ao excluir objeto :(", 
-															style: TextStyle(color: Colors.white)
-														),
-
-														backgroundColor: Colors.red,
-													),
-												);
-											}
-										});
+										// update obj in database
+										pst.updateObject(obj);
 									},
 								),
 

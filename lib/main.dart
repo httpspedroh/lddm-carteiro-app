@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
 				"/archived": (context) => const AllObjects(isArchived: true), // Tela de arquivados
 				"/favorited": (context) => const AllObjects(isFavorited: true), // Tela de favoritos
 				"/delivered": (context) => const AllObjects(isDelivered: true), // Tela de entregues
-				"/details": (context) => const Details(), // Principal funcionalidade
+				"/details": (context) => const Details(), // Detalhes do objeto
 				"/login": (context) => const Login(), // Login
 				"/register": (context) => const Register(), // Registro
 				"/about": (context) => const About(), // Sobre nós

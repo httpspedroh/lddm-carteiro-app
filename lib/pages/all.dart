@@ -340,8 +340,6 @@ class _AllObjectsState extends State<AllObjects> {
 													),
 												)
 											);
-
-											Navigator.pop(context);
 										}
 										else {
 
