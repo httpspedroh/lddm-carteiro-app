@@ -202,15 +202,13 @@ class _LoginState extends State<Login> {
 														style: ElevatedButton.styleFrom(
 															shape: const CircleBorder(),
 															padding: const EdgeInsets.all(15),
-															backgroundColor: const Color.fromARGB(255, 0, 95, 172),
 															foregroundColor: Colors.black,
 														),
 
-														child: Image.asset('assets/images/facebook.png', 
+														child: Image.asset('assets/images/github.png', 
 
 															height: 30, 
 															width: 30, 
-															color: Colors.white,
 														),
 													),
 

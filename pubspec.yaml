@@ -39,6 +39,9 @@ dependencies:
   sqflite: ^2.2.6
   path: ^1.8.2
   sqflite_common_ffi: ^2.2.5
+  cloud_firestore: ^4.8.1
+  shared_preferences: ^2.1.2
+
 
 dev_dependencies:
   flutter_test:

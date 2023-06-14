@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'pages/all.dart';
 import 'pages/details.dart';
-import 'pages/login.dart';
-import 'pages/register.dart';
 import 'pages/about.dart';
 
 // ------------------------------------------------------------------------------------------------- //
 
-void main() { 
-	
-	if(Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+void main() async { 
 
+	// await FirebaseService.initializeFirebase();
+
+	if(Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
 		sqfliteFfiInit();
 		databaseFactory = databaseFactoryFfi;
 	}
@@ -43,8 +42,8 @@ class MyApp extends StatelessWidget {
 				"/favorited": (context) => const AllObjects(isFavorited: true), // Tela de favoritos
 				"/delivered": (context) => const AllObjects(isDelivered: true), // Tela de entregues
 				"/details": (context) => const Details(), // Detalhes do objeto
-				"/login": (context) => const Login(), // Login
-				"/register": (context) => const Register(), // Registro
+				// "/login": (context) => const Login(), // Login
+				// "/register": (context) => const Register(), // Registro
 				"/about": (context) => const About(), // Sobre nós
 			},
 

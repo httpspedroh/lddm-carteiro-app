@@ -148,14 +148,14 @@ class _DetailsState extends State<Details> {
 									child: Container(
 										
 										padding: const EdgeInsets.only(top: 15, bottom: 20, right: 15),
-										child: Column(
+										child: const Column(
 
 											crossAxisAlignment: CrossAxisAlignment.stretch,
 											children: [
 												
 												Row(
 													
-													children: const [
+													children: [
 
 														Padding(padding: EdgeInsets.only(top: 15)),
 
@@ -174,11 +174,11 @@ class _DetailsState extends State<Details> {
 													],
 												),
 												
-												const Padding(padding: EdgeInsets.only(top: 12)),
+												Padding(padding: EdgeInsets.only(top: 12)),
 
 												Row(
 													
-													children: const [
+													children: [
 
 														Icon(Icons.location_on_rounded,
 															size: 15,
@@ -229,7 +229,7 @@ class _DetailsState extends State<Details> {
 									child: Container(
 										
 										padding: const EdgeInsets.only(top: 15, bottom: 20, right: 15),
-										child: Column(
+										child: const Column(
 
 											crossAxisAlignment: CrossAxisAlignment.stretch,
 											children: [
@@ -238,21 +238,21 @@ class _DetailsState extends State<Details> {
 													
 													children: [
 
-														const Padding(padding: EdgeInsets.only(top: 15)),
+														Padding(padding: EdgeInsets.only(top: 15)),
 
-														const Text("Em trânsito",
+														Text("Em trânsito",
 
 															textAlign: TextAlign.center,
 															style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
 														),
 
-														const Spacer(),
+														Spacer(),
 
 														Column(
 															
 															crossAxisAlignment: CrossAxisAlignment.end,
 
-															children: const [
+															children: [
 
 																Text("Fev 28, 2022",
 
@@ -268,11 +268,11 @@ class _DetailsState extends State<Details> {
 													],
 												),
 												
-												const Padding(padding: EdgeInsets.only(top: 12)),
+												Padding(padding: EdgeInsets.only(top: 12)),
 
 												Row(
 																
-													children: const [
+													children: [
 
 														Icon(Icons.arrow_right_alt_rounded,
 															size: 15,
@@ -288,11 +288,11 @@ class _DetailsState extends State<Details> {
 													],
 												),
 
-												const Padding(padding: EdgeInsets.only(top: 5)),
+												Padding(padding: EdgeInsets.only(top: 5)),
 
 												Row(
 													
-													children: const [
+													children: [
 
 														Icon(Icons.location_on_rounded,
 															size: 15,
@@ -343,7 +343,7 @@ class _DetailsState extends State<Details> {
 									child: Container(
 										
 										padding: const EdgeInsets.only(top: 15, bottom: 20, right: 15),
-										child: Column(
+										child: const Column(
 
 											crossAxisAlignment: CrossAxisAlignment.stretch,
 											children: [
@@ -352,21 +352,21 @@ class _DetailsState extends State<Details> {
 													
 													children: [
 
-														const Padding(padding: EdgeInsets.only(top: 15)),
+														Padding(padding: EdgeInsets.only(top: 15)),
 
-														const Text("Em trânsito",
+														Text("Em trânsito",
 
 															textAlign: TextAlign.center,
 															style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
 														),
 
-														const Spacer(),
+														Spacer(),
 
 														Column(
 															
 															crossAxisAlignment: CrossAxisAlignment.end,
 
-															children: const [
+															children: [
 
 																Text("Fev 25, 2022",
 
@@ -382,11 +382,11 @@ class _DetailsState extends State<Details> {
 													],
 												),
 												
-												const Padding(padding: EdgeInsets.only(top: 12)),
+												Padding(padding: EdgeInsets.only(top: 12)),
 
 												Row(
 																
-													children: const [
+													children: [
 
 														Icon(Icons.arrow_right_alt_rounded,
 															size: 15,
@@ -402,11 +402,11 @@ class _DetailsState extends State<Details> {
 													],
 												),
 
-												const Padding(padding: EdgeInsets.only(top: 5)),
+												Padding(padding: EdgeInsets.only(top: 5)),
 
 												Row(
 													
-													children: const [
+													children: [
 
 														Icon(Icons.location_on_rounded,
 															size: 15,
@@ -457,7 +457,7 @@ class _DetailsState extends State<Details> {
 									child: Container(
 										
 										padding: const EdgeInsets.only(top: 15, bottom: 20, right: 15),
-										child: Column(
+										child: const Column(
 
 											crossAxisAlignment: CrossAxisAlignment.stretch,
 											children: [
@@ -466,21 +466,21 @@ class _DetailsState extends State<Details> {
 													
 													children: [
 
-														const Padding(padding: EdgeInsets.only(top: 15)),
+														Padding(padding: EdgeInsets.only(top: 15)),
 
-														const Text("Objeto postado",
+														Text("Objeto postado",
 
 															textAlign: TextAlign.center,
 															style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
 														),
 
-														const Spacer(),
+														Spacer(),
 
 														Column(
 															
 															crossAxisAlignment: CrossAxisAlignment.end,
 
-															children: const [
+															children: [
 
 																Text("Fev 25, 2022",
 
@@ -496,11 +496,11 @@ class _DetailsState extends State<Details> {
 													],
 												),
 												
-												const Padding(padding: EdgeInsets.only(top: 12)),
+												Padding(padding: EdgeInsets.only(top: 12)),
 
 												Row(
 													
-													children: const [
+													children: [
 
 														Icon(Icons.location_on_rounded,
 															size: 15,

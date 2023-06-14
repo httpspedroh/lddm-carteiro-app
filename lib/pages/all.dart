@@ -1,5 +1,4 @@
 // ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import '../components/drawer.dart';
 import '../assets/object.dart';
@@ -491,9 +490,9 @@ class _AllObjectsState extends State<AllObjects> {
 															
 															const Padding(padding: EdgeInsets.only(top: 12)),
 
-															Row(
+															const Row(
 																
-																children: const [
+																children: [
 
 																	Icon(Icons.arrow_right_alt_rounded,
 																		size: 15,
@@ -512,9 +511,9 @@ class _AllObjectsState extends State<AllObjects> {
 
 															const Padding(padding: EdgeInsets.only(top: 5)),
 
-															Row(
+															const Row(
 																
-																children: const [
+																children: [
 
 																	Icon(Icons.location_on_rounded,
 																		size: 15,

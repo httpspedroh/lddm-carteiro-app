@@ -37,20 +37,20 @@ class _AboutState extends State<About> {
 
 			// ---------------------------------- //
 
-			body: Padding(
+			body: const Padding(
         		
-				padding: const EdgeInsets.all(20.0),
+				padding: EdgeInsets.all(20.0),
         		child: Column(
           
 		  			children: [
 
-            			const Image(image: AssetImage("assets/images/logo_new.png"), height: 150),
+            			Image(image: AssetImage("assets/images/logo_new.png"), height: 150),
             			
-						const SizedBox(height: 80),
+						SizedBox(height: 80),
 						
 						Row(
 							
-							children: const [
+							children: [
 								
 								Flexible(
 									child: Text("Postino permite que você rastreie encomendas em qualquer parte do território brasileiro utilizando a API dos Correios.",
@@ -63,11 +63,11 @@ class _AboutState extends State<About> {
 							]
 						),
 
-						const SizedBox(height: 100),
+						SizedBox(height: 100),
 						
 						Row(
 							
-							children: const [
+							children: [
 
 								Flexible(
 									
