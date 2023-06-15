@@ -1,6 +1,9 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'object.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 // ------------------------------------------------------------------------------------------------- //
 
@@ -83,8 +86,43 @@ class CommonFunctions {
 
 	// ------------------------------------------------------------ //
 
+	Future<void> updateTracking(Object objeto) async {
 
-	// get objects with dynamic optional where
+		const url = 'https://postino-bc949d0e29e0.herokuapp.com/rastrear';
+
+		final body = json.encode({
+
+			'codigos': [objeto.trackingCode],
+		});
+
+		final headers = {'Content-Type': 'application/json'};
+
+		try {
+
+			final response = await http.post(Uri.parse(url), headers: headers, body: body);
+
+			if (response.statusCode == 200) {
+
+				final data = response.body.isEmpty ? [] : json.decode(response.body);
+				var updated = json.encode(data[0]['eventos']);
+
+				if(updated == objeto.lastInfo) { return; }
+				else {
+
+					var date = data[0]['eventos'][data[0]['eventos'].length - 1]['data'];
+
+					objeto.lastInfo = updated;
+					objeto.lastUpdate = date == null ? DateTime.now() : DateTime.parse(date);
+
+					await updateObject(objeto);
+				}
+			}
+		} 
+		catch (e) { return; }
+	}
+
+	// ------------------------------------------------------------ //
+
 	Future<List<Object>> getObjects({bool? archived, bool? favorited, bool? delivered}) async {
 
 		final Database db = await getDatabase();
@@ -117,7 +155,7 @@ class CommonFunctions {
 			orderBy: "last_update DESC",
 		);
 
-		return List.generate(maps.length, (index) {
+		List<Object> objects = List.generate(maps.length, (index) {
 
 			return Object(
 
@@ -131,6 +169,15 @@ class CommonFunctions {
 				lastUpdate: DateTime.parse(maps[index]["last_update"]),
 			);
 		});
+
+		if(await InternetConnectionChecker().hasConnection) {
+
+			for(Object object in objects) {
+
+				await updateTracking(object);
+			}
+		}
+		return objects;
 	}
 
 	// ------------------------------------------------------------ //

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../components/drawer.dart';
 import '../assets/object.dart';
 import '../assets/_functions.dart';
+import 'dart:convert';
 
 // ------------------------------------------------------------------------------------------------- //
 
@@ -426,22 +427,59 @@ class _AllObjectsState extends State<AllObjects> {
 									child: Row(
 						
 										children: [
-											
-											Container(
 
-												height: 90,
-												width: 90,
-												padding: const EdgeInsets.only(top: 17, bottom: 17),
-												child: const CircleAvatar(
+											Builder(
+															
+												builder: (context) {
 
-													backgroundColor: Color.fromARGB(255, 203, 100, 221),
-													child: Icon(Icons.delivery_dining_rounded,
-														color: Colors.black,
-														size: 30 ,
-													),
-												),
+													var lastInfo = jsonDecode(snapshot.data![index].lastInfo!);
+													var data = lastInfo[lastInfo.length - 1];
+
+													Color color;
+													IconData icon;
+
+													if(data['descricao'] == "Objeto entregue ao destinatário") {
+
+														color = Colors.green;
+														icon = Icons.home_rounded;
+													}
+													else if(data['descricao'] == "Objeto saiu para entrega ao destinatário") {
+
+														color = Colors.purple;
+														icon = Icons.delivery_dining_rounded;
+													}
+													else if(data['descricao'] == "Objeto postado") {
+
+														color = Colors.orange;
+														icon = Icons.approval_rounded;
+													}
+													else if(data['descricao'] == "Objeto recebido pelos Correios do Brasil" || data['destino'] == null) {
+
+														color = Colors.yellow;
+														icon = Icons.flag_rounded;
+													}
+													else {
+
+														color = Colors.blue;
+														icon = Icons.local_shipping_rounded;
+													}
+
+													return Container(
+
+														height: 90,
+														width: 90,
+														padding: const EdgeInsets.only(top: 17, bottom: 17),
+														child: CircleAvatar(
+
+															backgroundColor: color,
+															child: Icon(icon,
+																color: Colors.black,
+																size: 30,
+															),
+														),
+													);
+												}
 											),
-											
 
 											Expanded(
 												
@@ -471,7 +509,6 @@ class _AllObjectsState extends State<AllObjects> {
 																		),
 																	),
 
-																	
 																	const Spacer(),
 
 																	// Last update formatted with a function
@@ -490,44 +527,84 @@ class _AllObjectsState extends State<AllObjects> {
 															
 															const Padding(padding: EdgeInsets.only(top: 12)),
 
-															const Row(
+															Builder(
 																
-																children: [
+																builder: (context) {
 
-																	Icon(Icons.arrow_right_alt_rounded,
-																		size: 15,
-																	),
+																	List<Widget> widgets = [];
 
-																	Padding(padding: EdgeInsets.only(left: 5)),
+																	var lastInfo = jsonDecode(snapshot.data![index].lastInfo!);
 
-																	Text("Saiu para entrega ao destinatário",
-																		
-																		overflow: TextOverflow.fade,
-																		style: TextStyle(fontSize: 13),
-																	),
+																	// ----------------------------------- //
 
-																],
-															),
-
-															const Padding(padding: EdgeInsets.only(top: 5)),
-
-															const Row(
+																	widgets.add(Row(
 																
-																children: [
+																		children: [
 
-																	Icon(Icons.location_on_rounded,
-																		size: 15,
-																	),
+																			const Icon(Icons.arrow_right_alt_rounded,
+																				size: 15,
+																			),
 
-																	Padding(padding: EdgeInsets.only(left: 5)),
+																			const Padding(padding: EdgeInsets.only(left: 5)),
 
-																	Text("CDD PAMPULHA - BELO HORIZONTE/MG",
-																		
-																		overflow: TextOverflow.fade,
-																		style: TextStyle(fontSize: 13),
-																	),
+																			Text(lastInfo[lastInfo.length - 1]["descricao"],
+																				
+																				overflow: TextOverflow.fade,
+																				style: const TextStyle(fontSize: 13),
+																			),
 
-																],
+																		],
+																	));
+
+																	widgets.add(const Padding(padding: EdgeInsets.only(top: 5)));
+
+																	widgets.add(Row(
+																
+																		children: [
+
+																			const Icon(Icons.location_on_rounded,
+																				size: 15,
+																			),
+
+																			const Padding(padding: EdgeInsets.only(left: 5)),
+
+																			Text(lastInfo[lastInfo.length - 1]["origem"],
+																				
+																				overflow: TextOverflow.fade,
+																				style: const TextStyle(fontSize: 13),
+																			),
+
+																		],
+																	));
+
+																	if(lastInfo[lastInfo.length - 1]["destino"] != null) {
+
+																		widgets.add(const Padding(padding: EdgeInsets.only(top: 5)));
+
+																		widgets.add(Row(
+																
+																			children: [
+
+																				const Icon(Icons.local_shipping_rounded,
+																					size: 15,
+																				),
+
+																				const Padding(padding: EdgeInsets.only(left: 5)),
+
+																				Text(lastInfo[lastInfo.length - 1]["destino"],
+																					
+																					overflow: TextOverflow.fade,
+																					style: const TextStyle(fontSize: 13),
+																				),
+
+																			],
+																		));
+																	}
+
+																	// ----------------------------------- //
+
+																	return Column(children: widgets);
+																},
 															),
 														], 
 													),

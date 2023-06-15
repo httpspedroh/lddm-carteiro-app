@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../assets/_functions.dart';
 import '../assets/object.dart';
+import 'dart:convert';
+import 'package:intl/intl.dart';
 
 // ------------------------------------------------------------------------------------------------- //
 
@@ -76,7 +78,7 @@ class _DetailsState extends State<Details> {
 										
 											Container(
 												
-												padding: const EdgeInsets.only(left: 70, top: 70, right: 70),
+												padding: const EdgeInsets.only(left: 70, top: 90, right: 70),
 												child: Column(
 														
 													children: [
@@ -118,411 +120,197 @@ class _DetailsState extends State<Details> {
         		},
 				
 				// ---------------------------------- //
+
+				body: Builder(
 					
-				body: Column(
+					builder: (context) {
 
-					children: [
+						List<Widget> widgets = [];
+
+						// ---------------------------------- //
+
+						var lastInfo = jsonDecode(obj.lastInfo!);
+						
+						for(int x = lastInfo.length - 1; x >= 0; x--) {
+
+							var event = lastInfo[x];
+
+							Color color;
+							IconData icon;
+
+							if(event['descricao'] == "Objeto entregue ao destinatário") {
+
+								color = Colors.green;
+								icon = Icons.home_rounded;
+							}
+							else if(event['descricao'] == "Objeto saiu para entrega ao destinatário") {
+
+								color = Colors.purple;
+								icon = Icons.delivery_dining_rounded;
+							}
+							else if(event['descricao'] == "Objeto postado") {
+
+								color = Colors.orange;
+								icon = Icons.approval_rounded;
+							}
+							else if(event['descricao'] == "Objeto recebido pelos Correios do Brasil" || event['destino'] == null) {
+
+								color = Colors.yellow;
+								icon = Icons.flag_rounded;
+							}
+							else {
+
+								color = Colors.blue;
+								icon = Icons.local_shipping_rounded;
+							}
+
+							// ---------------------------------- //
+
+							widgets.add(Row(
 					
-						// Item 1
-						Row(
-				
-							children: [
-								
-								Container(
-
-									height: 90,
-									width: 90,
-									padding: const EdgeInsets.only(top: 17, bottom: 17),
-									child: const CircleAvatar(
-
-										backgroundColor: Color.fromARGB(255, 203, 100, 221),
-										child: Icon(Icons.delivery_dining_rounded,
-											color: Colors.black,
-											size: 25,
-										),
-									),
-								),
-								
-								Expanded(
+								children: [
 									
-									child: Container(
-										
-										padding: const EdgeInsets.only(top: 15, bottom: 20, right: 15),
-										child: const Column(
+									Container(
 
-											crossAxisAlignment: CrossAxisAlignment.stretch,
-											children: [
-												
-												Row(
-													
-													children: [
+										height: 90,
+										width: 90,
+										padding: const EdgeInsets.only(top: 17, bottom: 17),
+										child: CircleAvatar(
 
-														Padding(padding: EdgeInsets.only(top: 15)),
-
-														Text("Saiu para entrega ao destinatário",
-
-															textAlign: TextAlign.center,
-															style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-														),
-
-														Spacer(),
-
-														Text("13 min atrás",
-
-															style: TextStyle(fontSize: 10),
-														),
-													],
-												),
-												
-												Padding(padding: EdgeInsets.only(top: 12)),
-
-												Row(
-													
-													children: [
-
-														Icon(Icons.location_on_rounded,
-															size: 15,
-														),
-
-														Padding(padding: EdgeInsets.only(left: 5)),
-
-														Text("CDD PAMPULHA - BELO HORIZONTE/MG",
-															
-															overflow: TextOverflow.fade,
-															style: TextStyle(fontSize: 13),
-														),
-
-													],
-												),
-											], 
+											backgroundColor: color,
+											child: Icon(icon,
+												color: Colors.black,
+												size: 25,
+											),
 										),
 									),
-								),
-							],
-						),
-	
-						// ---------------------------------- //
-
-						// Item 2
-						Row(
-				
-							children: [
-								
-								Container(
-
-									height: 90,
-									width: 90,
-									padding: const EdgeInsets.only(top: 17, bottom: 17),
-									child: const CircleAvatar(
-
-										backgroundColor: Colors.blue,
-										child: Icon(Icons.local_shipping_rounded,
-											color: Colors.black,
-											size: 25,
-										),
-									),
-								),
-								
-
-								Expanded(
 									
-									child: Container(
+									Expanded(
 										
-										padding: const EdgeInsets.only(top: 15, bottom: 20, right: 15),
-										child: const Column(
+										child: Container(
+											
+											padding: const EdgeInsets.only(top: 15, bottom: 20, right: 15),
+											child: Column(
 
-											crossAxisAlignment: CrossAxisAlignment.stretch,
-											children: [
-												
-												Row(
+												crossAxisAlignment: CrossAxisAlignment.stretch,
+												children: [
 													
-													children: [
+													Row(
+														
+														children: [
 
-														Padding(padding: EdgeInsets.only(top: 15)),
+															const Padding(padding: EdgeInsets.only(top: 15)),
 
-														Text("Em trânsito",
+															Text(event['descricao'],
 
-															textAlign: TextAlign.center,
-															style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-														),
+																textAlign: TextAlign.center,
+																style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+															),
 
-														Spacer(),
+															const Spacer(),
 
-														Column(
+															Column(
 															
-															crossAxisAlignment: CrossAxisAlignment.end,
+																crossAxisAlignment: CrossAxisAlignment.end,
 
-															children: [
+																children: [
 
-																Text("Fev 28, 2022",
+																	Text(DateFormat('MMM dd, yyyy').format(DateTime.parse(event['data'])),
 
-																	style: TextStyle(fontSize: 10),
-																),
+																		style: const TextStyle(fontSize: 10),
+																	),
 
-																Text("15:34:12",
+																	Text(DateFormat('kk:mm:ss').format(DateTime.parse(event['data'])),
 
-																	style: TextStyle(fontSize: 8),
-																),
-															],
-														)
-													],
-												),
-												
-												Padding(padding: EdgeInsets.only(top: 12)),
+																		style: const TextStyle(fontSize: 8),
+																	),
+																],
+															)
+														],
+													),
+													
+													const Padding(padding: EdgeInsets.only(top: 12)),
 
-												Row(
+													Row(
+														
+														children: [
+
+															Builder(
 																
-													children: [
+																builder: (context) {
 
-														Icon(Icons.arrow_right_alt_rounded,
-															size: 15,
-														),
+																	List<Widget> widgetsDetails = [];
 
-														Padding(padding: EdgeInsets.only(left: 5)),
+																	// ----------------------------------- //
 
-														Text("Unidade de Distribuição - BELO HORIZONTE/MG",
-															
-															overflow: TextOverflow.fade,
-															style: TextStyle(fontSize: 13),
-														),
-													],
-												),
-
-												Padding(padding: EdgeInsets.only(top: 5)),
-
-												Row(
-													
-													children: [
-
-														Icon(Icons.location_on_rounded,
-															size: 15,
-														),
-
-														Padding(padding: EdgeInsets.only(left: 5)),
-
-														Text("Unidade de Tratamento - BELO HORIZONTE/MG",
-															
-															overflow: TextOverflow.fade,
-															style: TextStyle(fontSize: 13),
-														),
-
-													],
-												),
-											], 
-										),
-									),
-								),
-							],
-						),
-
-						// ---------------------------------- //
-
-						// Item 3
-						Row(
-				
-							children: [
-								
-								Container(
-
-									height: 90,
-									width: 90,
-									padding: const EdgeInsets.only(top: 17, bottom: 17),
-									child: const CircleAvatar(
-
-										backgroundColor: Colors.blue,
-										child: Icon(Icons.local_shipping_rounded,
-											color: Colors.black,
-											size: 25,
-										),
-									),
-								),
-								
-
-								Expanded(
-									
-									child: Container(
-										
-										padding: const EdgeInsets.only(top: 15, bottom: 20, right: 15),
-										child: const Column(
-
-											crossAxisAlignment: CrossAxisAlignment.stretch,
-											children: [
-												
-												Row(
-													
-													children: [
-
-														Padding(padding: EdgeInsets.only(top: 15)),
-
-														Text("Em trânsito",
-
-															textAlign: TextAlign.center,
-															style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-														),
-
-														Spacer(),
-
-														Column(
-															
-															crossAxisAlignment: CrossAxisAlignment.end,
-
-															children: [
-
-																Text("Fev 25, 2022",
-
-																	style: TextStyle(fontSize: 10),
-																),
-
-																Text("13:12:53",
-
-																	style: TextStyle(fontSize: 8),
-																),
-															],
-														)
-													],
-												),
-												
-												Padding(padding: EdgeInsets.only(top: 12)),
-
-												Row(
+																	widgetsDetails.add(Row(
 																
-													children: [
+																		children: [
 
-														Icon(Icons.arrow_right_alt_rounded,
-															size: 15,
-														),
+																			const Icon(Icons.location_on_rounded,
+																				size: 15,
+																			),
 
-														Padding(padding: EdgeInsets.only(left: 5)),
+																			const Padding(padding: EdgeInsets.only(left: 5)),
 
-														Text("Unidade de Tratamento - BELO HORIZONTE/MG",
-															
-															overflow: TextOverflow.fade,
-															style: TextStyle(fontSize: 13),
-														),
-													],
-												),
+																			Text(event["origem"],
+																				
+																				overflow: TextOverflow.fade,
+																				style: const TextStyle(fontSize: 13),
+																			),
 
-												Padding(padding: EdgeInsets.only(top: 5)),
+																		],
+																	));
 
-												Row(
-													
-													children: [
+																	if(event["destino"] != null) {
 
-														Icon(Icons.location_on_rounded,
-															size: 15,
-														),
+																		widgetsDetails.add(const Padding(padding: EdgeInsets.only(top: 5)));
 
-														Padding(padding: EdgeInsets.only(left: 5)),
+																		widgetsDetails.add(Row(
+																			
+																			children: [
 
-														Text("Unidade de Tratamento - SAO PAULO/SP",
-															
-															overflow: TextOverflow.fade,
-															style: TextStyle(fontSize: 13),
-														),
+																				const Icon(Icons.local_shipping_rounded,
+																					size: 15,
+																				),
 
-													],
-												),
-											], 
+																				const Padding(padding: EdgeInsets.only(left: 5)),
+
+																				Text(event["destino"],
+																					
+																					overflow: TextOverflow.fade,
+																					style: const TextStyle(fontSize: 13),
+																				),
+
+																			],
+																		));
+																	}
+
+																	// --------------------------- /
+
+																	return Column(
+																		
+																		crossAxisAlignment: CrossAxisAlignment.start,
+																		children: widgetsDetails
+																	);
+																}
+															)
+
+														],
+													),
+												], 
+											),
 										),
 									),
-								),
-							],
-						),
+								],
+							));
+						}
 
 						// ---------------------------------- //
 
-						// Item 4
-						Row(
+						return Column(children: widgets);
+					}
 				
-							children: [
-								
-								Container(
-
-									height: 90,
-									width: 90,
-									padding: const EdgeInsets.only(top: 17, bottom: 17),
-									child: CircleAvatar(
-
-										backgroundColor: Colors.orange,
-										child: Image.asset("assets/images/trolley.png",
-											color: Colors.black,
-											height: 25,
-											width: 25,
-										),
-									),
-								),
-								
-								Expanded(
-									
-									child: Container(
-										
-										padding: const EdgeInsets.only(top: 15, bottom: 20, right: 15),
-										child: const Column(
-
-											crossAxisAlignment: CrossAxisAlignment.stretch,
-											children: [
-												
-												Row(
-													
-													children: [
-
-														Padding(padding: EdgeInsets.only(top: 15)),
-
-														Text("Objeto postado",
-
-															textAlign: TextAlign.center,
-															style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-														),
-
-														Spacer(),
-
-														Column(
-															
-															crossAxisAlignment: CrossAxisAlignment.end,
-
-															children: [
-
-																Text("Fev 25, 2022",
-
-																	style: TextStyle(fontSize: 10),
-																),
-
-																Text("11:08:06",
-
-																	style: TextStyle(fontSize: 8),
-																),
-															],
-														)
-													],
-												),
-												
-												Padding(padding: EdgeInsets.only(top: 12)),
-
-												Row(
-													
-													children: [
-
-														Icon(Icons.location_on_rounded,
-															size: 15,
-														),
-
-														Padding(padding: EdgeInsets.only(left: 5)),
-
-														Text("Agência dos Correios - SAO PAULO/SP",
-															
-															overflow: TextOverflow.fade,
-															style: TextStyle(fontSize: 13),
-														),
-
-													],
-												),
-											], 
-										),
-									),
-								),
-							],
-						),
-					],
 				),
 			
 				// ---------------------------------- //
