@@ -231,15 +231,6 @@ class _AllObjectsState extends State<AllObjects> {
 						return Text(title, style: const TextStyle(fontWeight: FontWeight.bold));
 					},
 				),
-
-				actions: const [
-
-					Padding(
-
-						padding: EdgeInsets.symmetric(horizontal: 16),
-						child: Icon(Icons.search),
-					),
-				],
 			),
 
 			// ---------------------------------- //
