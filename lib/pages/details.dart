@@ -7,36 +7,32 @@ import 'package:intl/intl.dart';
 // ------------------------------------------------------------------------------------------------- //
 
 class Details extends StatefulWidget {
+  const Details({super.key});
 
-  	const Details({super.key});
-
-  	@override
-  	State<Details> createState() => _DetailsState();
+  @override
+  State<Details> createState() => _DetailsState();
 }
 
 // ------------------------------------------------------------------------------------------------- //
 
 class _DetailsState extends State<Details> {
+  final pst = CommonFunctions();
 
-	final pst = CommonFunctions();
+  // ----------------------------------------------------------------- //
 
-	// ----------------------------------------------------------------- //
+  @override
+  Widget build(BuildContext context) {
+    // get obj in argument 0
+    Object obj = ModalRoute.of(context)!.settings.arguments as Object;
 
-  	@override
-  	Widget build(BuildContext context) {
+    // ------------------------------------------------------------------- //
 
-		// get obj in argument 0
-		Object obj = ModalRoute.of(context)!.settings.arguments as Object;
-
-		// ------------------------------------------------------------------- //
-
-		return Scaffold(
-
-			// ---------------------------------- //
+    return Scaffold(
+      // ---------------------------------- //
 
 			body: NestedScrollView(
 
-        		headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) { 
+        		headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
 
           			return [
 
@@ -55,260 +51,205 @@ class _DetailsState extends State<Details> {
 											obj.favorited = !obj.favorited!;
 										});
 
-										// update obj in database
-										pst.updateObject(obj);
-									},
-								),
+                    // update obj in database
+                    pst.updateObject(obj);
+                  },
+                ),
+                const Padding(padding: EdgeInsets.only(right: 10)),
+              ],
+              expandedHeight: 170.0,
+              floating: false,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                centerTitle: true,
+                background: Column(
+                  children: [
+                    Expanded(
+                      child: Container(
+                          padding: const EdgeInsets.only(
+                              left: 70, top: 90, right: 70),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(obj.trackingCode.toUpperCase(),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  const Padding(
+                                      padding: EdgeInsets.only(right: 5)),
+                                  Image.asset('assets/images/brazil.png',
+                                      height: 25, width: 25),
+                                ],
+                              ),
+                              Row(children: [
+                                Text(pst.formatDate(obj.lastUpdate,
+                                    isDetails: true)),
+                              ]),
+                              const Padding(padding: EdgeInsets.only(top: 10)),
+                              Row(children: [
+                                Text(obj.name,
+                                    style: const TextStyle(fontSize: 30)),
+                              ]),
+                            ],
+                          )),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ];
+        },
 
-								const Padding(padding: EdgeInsets.only(right: 10)),
-							],
+        // ---------------------------------- //
 
-							expandedHeight: 170.0,
-							floating: false,
-							pinned: true,
-							
-							flexibleSpace: FlexibleSpaceBar(
+        body: Builder(builder: (context) {
+          List<Widget> widgets = [];
 
-								centerTitle: true,
-								background: Column(
+          // ---------------------------------- //
 
-									children: [
+          var lastInfo = jsonDecode(obj.lastInfo!);
 
-										Expanded(child: 
-										
-											Container(
-												
-												padding: const EdgeInsets.only(left: 70, top: 90, right: 70),
-												child: Column(
-														
-													children: [
-														
-														Row(
-															
-															children: [
+          for (int x = lastInfo.length - 1; x >= 0; x--) {
+            var event = lastInfo[x];
 
-																Text(obj.trackingCode, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Color color;
+            IconData icon;
 
-																const Padding(padding: EdgeInsets.only(right: 5)),
+            if (event['descricao'] == "Objeto entregue ao destinatário") {
+              color = Colors.green;
+              icon = Icons.home_rounded;
+            } else if (event['descricao'] ==
+                "Objeto saiu para entrega ao destinatário") {
+              color = Colors.purple;
+              icon = Icons.delivery_dining_rounded;
+            } else if (event['descricao'] == "Objeto postado") {
+              color = Colors.orange;
+              icon = Icons.approval_rounded;
+            } else if (event['descricao'] ==
+                    "Objeto recebido pelos Correios do Brasil" ||
+                event['destino'] == null) {
+              color = Colors.yellow;
+              icon = Icons.flag_rounded;
+            } else {
+              color = Colors.blue;
+              icon = Icons.local_shipping_rounded;
+            }
 
-																Image.asset('assets/images/brazil.png', height: 25, width: 25),
-															],
-														),
+            // ---------------------------------- //
 
-														Row(children: [
+            widgets.add(Row(
+              children: [
+                Container(
+                  height: 90,
+                  width: 90,
+                  padding: const EdgeInsets.only(top: 17, bottom: 17),
+                  child: CircleAvatar(
+                    backgroundColor: color,
+                    child: Icon(
+                      icon,
+                      color: Colors.black,
+                      size: 25,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.only(top: 15, bottom: 20, right: 15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          children: [
+                            const Padding(padding: EdgeInsets.only(top: 15)),
+                            Text(
+                              event['descricao'],
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.bold),
+                            ),
+                            const Spacer(),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  DateFormat('MMM dd, yyyy')
+                                      .format(DateTime.parse(event['data'])),
+                                  style: const TextStyle(fontSize: 10),
+                                ),
+                                Text(
+                                  DateFormat('kk:mm:ss')
+                                      .format(DateTime.parse(event['data'])),
+                                  style: const TextStyle(fontSize: 8),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                        const Padding(padding: EdgeInsets.only(top: 12)),
+                        Row(
+                          children: [
+                            Builder(builder: (context) {
+                              List<Widget> widgetsDetails = [];
 
-															Text(pst.formatDate(obj.lastUpdate, isDetails: true)),
-														]),
+                              // ----------------------------------- //
 
-														const Padding(padding: EdgeInsets.only(top: 10)),
+                              widgetsDetails.add(Row(
+                                children: [
+                                  const Icon(
+                                    Icons.location_on_rounded,
+                                    size: 15,
+                                  ),
+                                  const Padding(
+                                      padding: EdgeInsets.only(left: 5)),
+                                  Text(
+                                    event["origem"],
+                                    overflow: TextOverflow.fade,
+                                    style: const TextStyle(fontSize: 13),
+                                  ),
+                                ],
+                              ));
 
-														Row(children: [
+                              if (event["destino"] != null) {
+                                widgetsDetails.add(const Padding(
+                                    padding: EdgeInsets.only(top: 5)));
 
-															Text(obj.name,
-																style: const TextStyle(fontSize: 30)
-															),
-														]),
-													],
-												)
-											),
-										),
-									],
-								),
-							),
-						),
-          			];
-        		},
-				
-				// ---------------------------------- //
+                                widgetsDetails.add(Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.local_shipping_rounded,
+                                      size: 15,
+                                    ),
+                                    const Padding(
+                                        padding: EdgeInsets.only(left: 5)),
+                                    Text(
+                                      event["destino"],
+                                      overflow: TextOverflow.fade,
+                                      style: const TextStyle(fontSize: 13),
+                                    ),
+                                  ],
+                                ));
+                              }
 
-				body: Builder(
-					
-					builder: (context) {
+                              // --------------------------- /
 
-						List<Widget> widgets = [];
+                              return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: widgetsDetails);
+                            })
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ));
+          }
 
-						// ---------------------------------- //
+          // ---------------------------------- //
 
-						var lastInfo = jsonDecode(obj.lastInfo!);
-						
-						for(int x = lastInfo.length - 1; x >= 0; x--) {
-
-							var event = lastInfo[x];
-
-							Color color;
-							IconData icon;
-
-							if(event['descricao'] == "Objeto entregue ao destinatário") {
-
-								color = Colors.green;
-								icon = Icons.home_rounded;
-							}
-							else if(event['descricao'] == "Objeto saiu para entrega ao destinatário") {
-
-								color = Colors.purple;
-								icon = Icons.delivery_dining_rounded;
-							}
-							else if(event['descricao'] == "Objeto postado") {
-
-								color = Colors.orange;
-								icon = Icons.approval_rounded;
-							}
-							else if(event['descricao'] == "Objeto recebido pelos Correios do Brasil" || event['destino'] == null) {
-
-								color = Colors.yellow;
-								icon = Icons.flag_rounded;
-							}
-							else {
-
-								color = Colors.blue;
-								icon = Icons.local_shipping_rounded;
-							}
-
-							// ---------------------------------- //
-
-							widgets.add(Row(
-					
-								children: [
-									
-									Container(
-
-										height: 90,
-										width: 90,
-										padding: const EdgeInsets.only(top: 17, bottom: 17),
-										child: CircleAvatar(
-
-											backgroundColor: color,
-											child: Icon(icon,
-												color: Colors.black,
-												size: 25,
-											),
-										),
-									),
-									
-									Expanded(
-										
-										child: Container(
-											
-											padding: const EdgeInsets.only(top: 15, bottom: 20, right: 15),
-											child: Column(
-
-												crossAxisAlignment: CrossAxisAlignment.stretch,
-												children: [
-													
-													Row(
-														
-														children: [
-
-															const Padding(padding: EdgeInsets.only(top: 15)),
-
-															Text(event['descricao'],
-
-																textAlign: TextAlign.center,
-																style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-															),
-
-															const Spacer(),
-
-															Column(
-															
-																crossAxisAlignment: CrossAxisAlignment.end,
-
-																children: [
-
-																	Text(DateFormat('MMM dd, yyyy').format(DateTime.parse(event['data'])),
-
-																		style: const TextStyle(fontSize: 10),
-																	),
-
-																	Text(DateFormat('kk:mm:ss').format(DateTime.parse(event['data'])),
-
-																		style: const TextStyle(fontSize: 8),
-																	),
-																],
-															)
-														],
-													),
-													
-													const Padding(padding: EdgeInsets.only(top: 12)),
-
-													Row(
-														
-														children: [
-
-															Builder(
-																
-																builder: (context) {
-
-																	List<Widget> widgetsDetails = [];
-
-																	// ----------------------------------- //
-
-																	widgetsDetails.add(Row(
-																
-																		children: [
-
-																			const Icon(Icons.location_on_rounded,
-																				size: 15,
-																			),
-
-																			const Padding(padding: EdgeInsets.only(left: 5)),
-
-																			Text(event["origem"],
-																				
-																				overflow: TextOverflow.fade,
-																				style: const TextStyle(fontSize: 13),
-																			),
-
-																		],
-																	));
-
-																	if(event["destino"] != null) {
-
-																		widgetsDetails.add(const Padding(padding: EdgeInsets.only(top: 5)));
-
-																		widgetsDetails.add(Row(
-																			
-																			children: [
-
-																				const Icon(Icons.local_shipping_rounded,
-																					size: 15,
-																				),
-
-																				const Padding(padding: EdgeInsets.only(left: 5)),
-
-																				Text(event["destino"],
-																					
-																					overflow: TextOverflow.fade,
-																					style: const TextStyle(fontSize: 13),
-																				),
-
-																			],
-																		));
-																	}
-
-																	// --------------------------- /
-
-																	return Column(
-																		
-																		crossAxisAlignment: CrossAxisAlignment.start,
-																		children: widgetsDetails
-																	);
-																}
-															)
-
-														],
-													),
-												], 
-											),
-										),
-									),
-								],
-							));
-						}
-
-						// ---------------------------------- //
-
-						return ListView(children: widgets);
+						return Column(children: widgets);
 					}
 				
 				),

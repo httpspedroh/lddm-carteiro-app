@@ -46,7 +46,7 @@ class CommonFunctions {
 
 			int result = await updateTracking(object);
 
-			if(result == -1) { return -1; }
+			if(result == -1) return -1;
 		}
 		catch(e) { return -1; }
 
