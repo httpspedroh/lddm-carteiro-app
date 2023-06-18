@@ -41,6 +41,15 @@ class CommonFunctions {
 
 	Future<int> insertObject(Object object) async {
 
+		// Try to track the object
+		try {
+
+			int result = await updateTracking(object);
+
+			if(result == -1) { return -1; }
+		}
+		catch(e) { return -1; }
+
 		final Database db = await getDatabase();
 
 		try {
@@ -86,7 +95,8 @@ class CommonFunctions {
 
 	// ------------------------------------------------------------ //
 
-	Future<void> updateTracking(Object objeto) async {
+	// future int update tracking
+	Future<int> updateTracking(Object objeto) async {
 
 		const url = 'https://postino-bc949d0e29e0.herokuapp.com/rastrear';
 
@@ -106,9 +116,8 @@ class CommonFunctions {
 				final data = response.body.isEmpty ? [] : json.decode(response.body);
 				var updated = json.encode(data[0]['eventos']);
 
-				if(updated == objeto.lastInfo) { return; }
-				else {
-
+				if(updated != objeto.lastInfo) {
+				
 					var date = data[0]['eventos'][data[0]['eventos'].length - 1]['data'];
 
 					objeto.lastInfo = updated;
@@ -116,9 +125,11 @@ class CommonFunctions {
 
 					await updateObject(objeto);
 				}
+				return 1;
 			}
 		} 
-		catch (e) { return; }
+		catch (e) { return -1; }
+		return -1;
 	}
 
 	// ------------------------------------------------------------ //

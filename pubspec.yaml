@@ -39,8 +39,6 @@ dependencies:
   sqflite: ^2.2.6
   path: ^1.8.2
   sqflite_common_ffi: ^2.2.5
-  cloud_firestore: ^4.8.1
-  shared_preferences: ^2.1.2
   http: ^1.0.0
   internet_connection_checker: ^1.0.0+1
   intl: ^0.18.1

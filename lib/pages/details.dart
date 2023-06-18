@@ -36,7 +36,7 @@ class _DetailsState extends State<Details> {
 
 			body: NestedScrollView(
 
-        		headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        		headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) { 
 
           			return [
 
@@ -308,7 +308,7 @@ class _DetailsState extends State<Details> {
 
 						// ---------------------------------- //
 
-						return Column(children: widgets);
+						return ListView(children: widgets);
 					}
 				
 				),
