@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:provider/provider.dart';
+import 'assets/themeprovider.dart';
 import 'pages/all.dart';
 import 'pages/details.dart';
 import 'pages/about.dart';
@@ -9,18 +11,23 @@ import 'pages/about.dart';
 
 void main() async { 
 
-	// await FirebaseService.initializeFirebase();
-
 	if(Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+
 		sqfliteFfiInit();
 		databaseFactory = databaseFactoryFfi;
 	}
 
-	runApp(const MyApp());
+	runApp(
+
+		ChangeNotifierProvider(
+
+			create: (context) => ThemeProvider(),
+			child: const MyApp(),
+		),
+  	);
 }
 
 // ------------------------------------------------------------------------------------------------- //
-
 class MyApp extends StatelessWidget {
 	
   	const MyApp({super.key});
@@ -42,8 +49,6 @@ class MyApp extends StatelessWidget {
 				"/favorited": (context) => const AllObjects(isFavorited: true), // Tela de favoritos
 				"/delivered": (context) => const AllObjects(isDelivered: true), // Tela de entregues
 				"/details": (context) => const Details(), // Detalhes do objeto
-				// "/login": (context) => const Login(), // Login
-				// "/register": (context) => const Register(), // Registro
 				"/about": (context) => const About(), // Sobre nós
 			},
 
@@ -79,7 +84,7 @@ class MyApp extends StatelessWidget {
 				),
 			),
 
-			themeMode: ThemeMode.dark,
+			themeMode: Provider.of<ThemeProvider>(context).themeMode,
 		);
 	}
 }

@@ -1,6 +1,10 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../assets/themeprovider.dart';
+
+// ------------------------------------------------------------------------------------------------- //
 
 class NavDrawer extends StatefulWidget {
 
@@ -9,6 +13,8 @@ class NavDrawer extends StatefulWidget {
 	@override
 	_NavDrawerState createState() => _NavDrawerState();
 }
+
+// ------------------------------------------------------------------------------------------------- //
 
 class _NavDrawerState extends State<NavDrawer> {
 
@@ -102,9 +108,20 @@ class _NavDrawerState extends State<NavDrawer> {
 
 								ListTile(
 
-									leading: const Icon(Icons.settings),
-									title: const Text("Configurações"),
-									onTap: () {},
+									leading: const Icon(Icons.nightlight_round),
+									title: const Text('Modo escuro'),
+									trailing: Switch(
+
+										value: Theme.of(context).brightness == Brightness.dark,
+										onChanged: (value) {
+
+											setState(() {
+												
+												if (value) { Provider.of<ThemeProvider>(context, listen: false).themeMode = ThemeMode.dark; }
+												else { Provider.of<ThemeProvider>(context, listen: false).themeMode = ThemeMode.light; }
+											});
+										},
+									),
 								),
 
 								ListTile(
