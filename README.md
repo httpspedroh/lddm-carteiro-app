@@ -6,14 +6,13 @@ O aplicativo também oferece recursos adicionais, como a possibilidade de arquiv
 
 ## Índice
 
-- [Postino](#postino)
-  - [Índice](#índice)
-  - [Demonstração](#demonstração)
-  - [Funcionalidades](#funcionalidades)
-  - [Instalação](#instalação)
-  - [Uso](#uso)
-  - [Dependências Utilizadas](#dependências-utilizadas)
-  - [Créditos](#créditos)
+- [Índice](#índice)
+- [Demonstração](#demonstração)
+- [Funcionalidades](#funcionalidades)
+- [Instalação](#instalação)
+- [Uso](#uso)
+- [Dependências Utilizadas](#dependências-utilizadas)
+- [Créditos](#créditos)
 
 ## Demonstração
 
