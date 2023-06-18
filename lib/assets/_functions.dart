@@ -102,7 +102,7 @@ class CommonFunctions {
 
 		final body = json.encode({
 
-			'codigos': [objeto.trackingCode],
+			'codigos': [objeto.trackingCode.toUpperCase()],
 		});
 
 		final headers = {'Content-Type': 'application/json'};
